@@ -1,0 +1,20 @@
+{
+  "name": "test3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "md": "node src/utils/dev/md-to-data.js content/blog  docs",
+    "h": "marked --help",
+    "start": "remark . -o -u remark-html",
+    "dev": "pug -o *.html -i Asked.md",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gray-matter": "^4.0.3",
+    "pug": "^3.0.2"
+  }
+}
