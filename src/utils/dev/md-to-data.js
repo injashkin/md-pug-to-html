@@ -5,7 +5,6 @@ const matter = require('gray-matter');
 const dirIn = process.argv[2]; // из какой папки нужно всё прочитать
 const dirOut = process.argv[3] || dirIn;
 
-//========================================
 function mkDir(dir) {
   try {
     if (!fs.existsSync(dir)) {
@@ -30,7 +29,31 @@ function handlerStatus(err, status) {
       console.log(`Файл: ${filePath}`);
       const contentMixed = getContentFromFile(filePath);
       const dataJson = separateDataJson(contentMixed);
+      const dataJsonString = JSON.stringify(dataJson, null, 2);
       const content = separateContent(contentMixed);
+      const filePathOut = filePath.replace(dirIn, dirOut);
+
+      const pathOutObject = path.parse(filePathOut);
+      const dirPathOut = pathOutObject.dir;
+      const fileName = pathOutObject.name;
+
+      const filePathJson = path.normalize(`${dirPathOut}/${fileName}.json`);
+      console.log(`filePathJson: ${filePathJson}`);
+      mkDir(dirPathOut);
+
+      fs.writeFile(filePathOut, content, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+
+      fs.writeFile(filePathJson, dataJsonString, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
     }
   }
 }
@@ -57,8 +80,6 @@ function listDir(pathD) {
   fs.readdir(pathD, handler.bind(pathD));
 }
 
-//==========================================
-
 function getFileName(filePath) {
   return path.basename(filePath, path.extname(filePath));
 }
@@ -78,29 +99,6 @@ function separateContent(contentMixed) {
 //console.log(`filePath: ${filePath}`);
 listDir(dirIn);
 
-/*
-// Front-matter
-let dataJsonString = JSON.stringify(dataJson, null, 2);
-
-mkDir(dirOut);
-
-let fileJson = `${dirOut}/${fileName}.json`;
-let fileMd = `${dirOut}/${fileName}.md`;
-
-fs.writeFile(fileJson, dataJsonString, (err) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-});
-
-fs.writeFile(fileMd, content, (err) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-});
-
 //console.log(process.argv);
 
 //console.log(matter.test(file));
@@ -109,4 +107,3 @@ fs.writeFile(fileMd, content, (err) => {
 //console.log(file2);
 
 //const data = fs.writeFileSync('example-content.md', file.content)
-*/
