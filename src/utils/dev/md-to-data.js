@@ -2,8 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const inputDirectory = process.argv[2]; // из какого каталога нужно всё прочитать
-const outputDirectory = process.argv[3] || inputDirectory; // в какой каталог нужно всё поместить
+const specifiedPathOfSourceDirectory = process.argv[2]; // из какого каталога нужно всё прочитать
+const specifiedPathOfDestinationDirectory =
+  process.argv[3] || specifiedPathOfSourceDirectory; // в какой каталог нужно всё поместить
 
 function mkDir(dir) {
   try {
@@ -24,63 +25,72 @@ function writeFile(path, content) {
   });
 }
 
-function handleFileMd(filePath) {
-  const allContentFileMd = splitFileContents(filePath);
+function replacePathOfSourceDirectoryToDestination(pathFileOfSource) {
+  return pathFileOfSource.replace(
+    specifiedPathOfSourceDirectory,
+    specifiedPathOfDestinationDirectory
+  );
+}
 
-  const pathOutFile = filePath.replace(inputDirectory, outputDirectory);
+function handleFileMd(pathFileOfSource) {
+  const allContentFileMd = splitFileContents(pathFileOfSource);
 
-  const pathOutFileAsObj = path.parse(pathOutFile);
-  const dirPathOut = pathOutFileAsObj.dir;
-  const fileName = pathOutFileAsObj.name;
+  const pathDestinationFile =
+    replacePathOfSourceDirectoryToDestination(pathFileOfSource);
+
+  const pathDestinationFileAsObj = path.parse(pathDestinationFile);
+  const dirPathOut = pathDestinationFileAsObj.dir;
+  const fileName = pathDestinationFileAsObj.name;
 
   const pathOfJsonFile = path.normalize(`${dirPathOut}/${fileName}.json`);
 
   mkDir(dirPathOut);
-  writeFile(pathOutFile, allContentFileMd.content);
+  writeFile(pathDestinationFile, allContentFileMd.content);
   writeFile(pathOfJsonFile, allContentFileMd.dataJsonString);
 }
 
 function handlerStatus(err, status) {
-  const fileAndDirPath = `${this}`;
+  const pathFileOrDirectoryOfSource = `${this}`;
   if (err) throw err;
 
   if (status.isDirectory()) {
-    const fileDir = fileAndDirPath;
-    listDir(fileDir); // рекурсия
+    const pathDirectoryOfSource = pathFileOrDirectoryOfSource;
+    listDir(pathDirectoryOfSource); // рекурсия
   } else {
-    const filePath = fileAndDirPath;
-    if (path.extname(filePath) === '.md') {
-      handleFileMd(filePath);
-    }
+    const pathFileOfSource = pathFileOrDirectoryOfSource;
+    if (path.extname(pathFileOfSource) === '.md') {
+      handleFileMd(pathFileOfSource);
+    } //else fs.copyFileSync(pathFileOfSource);
     // Здесь нужно добавить
     // если файл не '.md', то просто копируется в выходной каталог
   }
 }
 
-function checkStatus(pathD) {
-  fs.stat(pathD, handlerStatus.bind(pathD));
+function checkStatus(pathFileOrDirectoryOfSource) {
+  fs.stat(
+    pathFileOrDirectoryOfSource,
+    handlerStatus.bind(pathFileOrDirectoryOfSource)
+  );
 }
 
-function parse(files, path) {
+function parse(filesAndDirectories, path) {
   let pathD = '';
 
-  for (let file of files) {
-    pathD = `${path}/${file}`;
-    checkStatus(pathD);
+  for (let fileOrDirectory of filesAndDirectories) {
+    pathFileOrDirectory = `${path}/${fileOrDirectory}`;
+    checkStatus(pathFileOrDirectory);
   }
 }
 
-function handler(err, files) {
-  if (err) throw err;
-  parse(files, this);
+function listDir(path) {
+  fs.readdir(path, (err, filesAndDirectories) => {
+    if (err) throw err;
+    parse(filesAndDirectories, path);
+  });
 }
 
-function listDir(pathD) {
-  fs.readdir(pathD, handler.bind(pathD));
-}
-
-function getContentFromFile(filePath) {
-  return fs.readFileSync(filePath);
+function getContentFromFile(pathFileOfSource) {
+  return fs.readFileSync(pathFileOfSource);
 }
 
 function separateDataJson(contentMixed) {
@@ -91,13 +101,13 @@ function separateContent(contentMixed) {
   return matter(contentMixed).content;
 }
 
-function splitFileContents(filePath) {
+function splitFileContents(pathFileOfSource) {
   const obj = {};
-  obj.contentMixed = getContentFromFile(filePath);
+  obj.contentMixed = getContentFromFile(pathFileOfSource);
   obj.content = separateContent(obj.contentMixed);
   obj.dataJsonObj = separateDataJson(obj.contentMixed);
   obj.dataJsonString = JSON.stringify(obj.dataJsonObj, null, 2);
   return obj;
 }
 
-listDir(inputDirectory);
+listDir(specifiedPathOfSourceDirectory);
