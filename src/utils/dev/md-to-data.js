@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const dirIn = process.argv[2]; // из какой папки нужно всё прочитать
-const dirOut = process.argv[3] || dirIn;
+const inputDirectory = process.argv[2]; // из какого каталога нужно всё прочитать
+const outputDirectory = process.argv[3] || inputDirectory; // в какой каталог нужно всё поместить
 
 function mkDir(dir) {
   try {
@@ -15,46 +15,45 @@ function mkDir(dir) {
   }
 }
 
+function writeFile(path, content) {
+  fs.writeFile(path, content, (err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+  });
+}
+
+function handleFileMd(filePath) {
+  const allContentFileMd = splitFileContents(filePath);
+
+  const pathOutFile = filePath.replace(inputDirectory, outputDirectory);
+
+  const pathOutFileAsObj = path.parse(pathOutFile);
+  const dirPathOut = pathOutFileAsObj.dir;
+  const fileName = pathOutFileAsObj.name;
+
+  const pathOfJsonFile = path.normalize(`${dirPathOut}/${fileName}.json`);
+
+  mkDir(dirPathOut);
+  writeFile(pathOutFile, allContentFileMd.content);
+  writeFile(pathOfJsonFile, allContentFileMd.dataJsonString);
+}
+
 function handlerStatus(err, status) {
   const fileAndDirPath = `${this}`;
   if (err) throw err;
 
   if (status.isDirectory()) {
     const fileDir = fileAndDirPath;
-    //console.log(`Папка: ${this}`);
     listDir(fileDir); // рекурсия
   } else {
     const filePath = fileAndDirPath;
     if (path.extname(filePath) === '.md') {
-      console.log(`Файл: ${filePath}`);
-      const contentMixed = getContentFromFile(filePath);
-      const dataJson = separateDataJson(contentMixed);
-      const dataJsonString = JSON.stringify(dataJson, null, 2);
-      const content = separateContent(contentMixed);
-      const filePathOut = filePath.replace(dirIn, dirOut);
-
-      const pathOutObject = path.parse(filePathOut);
-      const dirPathOut = pathOutObject.dir;
-      const fileName = pathOutObject.name;
-
-      const filePathJson = path.normalize(`${dirPathOut}/${fileName}.json`);
-      console.log(`filePathJson: ${filePathJson}`);
-      mkDir(dirPathOut);
-
-      fs.writeFile(filePathOut, content, (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-      });
-
-      fs.writeFile(filePathJson, dataJsonString, (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-      });
+      handleFileMd(filePath);
     }
+    // Здесь нужно добавить
+    // если файл не '.md', то просто копируется в выходной каталог
   }
 }
 
@@ -80,10 +79,6 @@ function listDir(pathD) {
   fs.readdir(pathD, handler.bind(pathD));
 }
 
-function getFileName(filePath) {
-  return path.basename(filePath, path.extname(filePath));
-}
-
 function getContentFromFile(filePath) {
   return fs.readFileSync(filePath);
 }
@@ -96,14 +91,13 @@ function separateContent(contentMixed) {
   return matter(contentMixed).content;
 }
 
-//console.log(`filePath: ${filePath}`);
-listDir(dirIn);
+function splitFileContents(filePath) {
+  const obj = {};
+  obj.contentMixed = getContentFromFile(filePath);
+  obj.content = separateContent(obj.contentMixed);
+  obj.dataJsonObj = separateDataJson(obj.contentMixed);
+  obj.dataJsonString = JSON.stringify(obj.dataJsonObj, null, 2);
+  return obj;
+}
 
-//console.log(process.argv);
-
-//console.log(matter.test(file));
-//console.log(matter.stringify(file, data))
-//const file2 = matter.read('example.md');
-//console.log(file2);
-
-//const data = fs.writeFileSync('example-content.md', file.content)
+listDir(inputDirectory);
