@@ -60,9 +60,15 @@ function handlerStatus(err, status) {
     const pathFileOfSource = pathFileOrDirectoryOfSource;
     if (path.extname(pathFileOfSource) === '.md') {
       handleFileMd(pathFileOfSource);
-    } //else fs.copyFileSync(pathFileOfSource);
-    // Здесь нужно добавить
-    // если файл не '.md', то просто копируется в выходной каталог
+    } else {
+      const pathDestinationFile = replacePathOfSourceDirectoryToDestination(
+        pathFileOrDirectoryOfSource
+      );
+      const pathDestinationFileAsObj = path.parse(pathDestinationFile);
+      const dirPathOut = pathDestinationFileAsObj.dir;
+      mkDir(dirPathOut);
+      fs.copyFileSync(pathFileOfSource, pathDestinationFile);
+    }
   }
 }
 
