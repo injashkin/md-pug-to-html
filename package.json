@@ -2,9 +2,6 @@
   "name": "md-pug-to-html",
   "version": "1.0.1",
   "description": "",
-  "bin": {
-    "md-pug-to-html": "index.js"
-  },
   "main": "index.js",
   "scripts": {
     "md": "node index -i=content -t=src/pages/article",
