@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "md": "node src/utils/pug-md-to-html > con.log 2> err.log -i=content -t=src/pages/article",
+    "md": "node index > con.log 2> err.log -i=content -t=src/pages/article",
     "h": "marked --help",
     "start": "remark . -o -u remark-html",
     "dev": "pug -o *.html -i Asked.md",
