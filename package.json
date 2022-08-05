@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "md": "node src/utils/dev/md-to-data.js content/blog  docs",
+    "md": "node src/utils/pug-md-to-html > con.log 2> err.log -i=content -t=src/pages/article",
     "h": "marked --help",
     "start": "remark . -o -u remark-html",
     "dev": "pug -o *.html -i Asked.md",
@@ -15,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "gray-matter": "^4.0.3",
+    "markdown-to-pug": "^1.0.11",
     "pug": "^3.0.2"
   }
 }

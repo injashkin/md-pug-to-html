@@ -61,6 +61,7 @@ module.exports.compile = function (
   );
 
   const pugFromMd = compilePugFromMd(content);
+  mdToHtml.mkDir(templateDir);
   mdToHtml.writeFile(`${templateDir}${path.sep}from-md.pug`, pugFromMd);
 
   const htmlFromPug = compileHtml(
@@ -74,4 +75,3 @@ module.exports.compile = function (
     htmlFromPug
   );
 };
-

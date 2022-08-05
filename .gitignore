@@ -1,3 +1,6 @@
 node_modules
 content
 docs
+src
+con.log
+err.log
