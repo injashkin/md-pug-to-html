@@ -1,6 +1,6 @@
 {
   "name": "md-pug-to-html",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "bin": {
     "md-pug-to-html": "index.js"
