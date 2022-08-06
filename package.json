@@ -3,6 +3,9 @@
   "version": "1.0.4",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "md-pug-to-html": "./index.js"
+  },
   "scripts": {
     "md": "node index -i=content -t=src/pages/article",
     "test": "echo \"Error: no test specified\" && exit 1"
