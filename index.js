@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const mdToData = require('./md-to-data');
 
 function mdPugToHtml() {
