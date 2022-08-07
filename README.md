@@ -96,7 +96,7 @@ created: 2019-05-20
 
 ## Установка
 
-```sh
+```
 npm i -D md-pug-to-html
 ```
 
@@ -159,6 +159,7 @@ npm i -D md-pug-to-html
 ## Контакты
 
 Игорь Яшкин - injashkin@gmail.com - https://t.me/jashkin
+
 Ссылка на проект: https://github.com/injashkin/md-pug-to-html
 
 <!-- ACKNOWLEDGMENTS -->
@@ -207,7 +208,7 @@ npm i -D md-pug-to-html
 [issues-shield]: https://img.shields.io/github/issues/injashkin/md-pug-to-html.svg?style=for-the-badge
 [issues-url]: https://github.com/injashkin/md-pug-to-html/issues
 [license-shield]: https://img.shields.io/github/license/injashkin/md-pug-to-html.svg?style=for-the-badge
-[license-url]: https://github.com/injashkin/md-pug-to-html/blob/master/LICENSE.txt
+[license-url]: https://github.com/injashkin/md-pug-to-html/blob/main/LICENSE.txt
 [nodejs.org]: https://img.shields.io/badge/node.js-000000?style=for-the-badge&logo=nodedotjs&logoColor=white
 [nodejs-url]: https://nodejs.org/
 [pug.js]: https://img.shields.io/badge/Pug-critical?style=for-the-badge&logo=pug&logoColor=white
