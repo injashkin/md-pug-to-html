@@ -30,11 +30,11 @@
     <a href="https://github.com/injashkin/md-pug-to-html"><strong>Изучите документацию »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/github_username/repo_name">Демонстрация</a>
+    <a href="https://github.com/injashkin/md-pug-to-html">Демонстрация</a>
     ·
     <a href="https://github.com/injashkin/md-pug-to-html/issues">Отчет об ошибках</a>
     ·
-    <a href="https://github.com/github_username/repo_name/issues">Хотелки</a>
+    <a href="https://github.com/injashkin/md-pug-to-html/issues">Хотелки</a>
   </p>
 </div>
 
@@ -57,10 +57,11 @@
     </li>
     <li><a href="#использование">Использование</a></li>
     <li><a href="#дальнейшее-развитие">Дальнейшее развитие</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Благодарности</a></li>
+    <li><a href="#участие-в-проекте">Участие в проекте</a></li>
+    <li><a href="#лицензия">Лицензия</a></li>
+    <li><a href="#контакты">Контакты</a></li>
+    <li><a href="#благодарности">Благодарности</a></li>
+    <li><a href="#дополнительно">Дополнительно</a></li>
   </ol>
 </details>
 
@@ -68,7 +69,7 @@
 
 ## О проекте
 
-Преобразует файлы Markdown, которые могут содержать данные Frontmatter, в файлы HTML,при этом учитывается разметка, заданная шаблонами Pug.
+Преобразует файлы Markdown, которые могут содержать данные Frontmatter, в файлы HTML, при этом учитывается разметка, заданная шаблонами Pug.
 Утилита ищет все файлы с расширением `.md` в указанном (с помощью ключа `-i`) каталоге и всех его подкаталогах, отделяет Frontmatter от контента и на основе данных, полученных из Frontmatter, местоположения файлов `.md` и настроек в строке `"pug-md-to-html"` файла `package.json`, генерирует `html` файлы, которые являются готовыми страницами сайта. Список URL адресов к этим страницам, также генерируется автоматически и помещается в файл `link-list.pug` в виде массива объектов. Каждый объект массива содержит три свойства: название статьи, Url адрес и краткое описание. Используя этот массив можно с помощью цикла сгенерировать список ссылок для перехода к этим страницам. Поля из Frontmatter, такие как title, description, created и др. встраиваются в соответствующие места HTML страниц. Файлы, которые не являются `.md`, просто копируются из исходного каталога в каталог `docs/images`, так как, обычно, это файлы изображений.
 
 Markdown Frontmatter - это выделенный тремя дефисами `---` раздел в начале файла markdown, который имеет формат YAML/TOML. Вот пример frontmatter markdown в формате YAML:
@@ -93,11 +94,7 @@ created: 2019-05-20
 
 <p align="right">(<a href="#readme-top">в начало</a>)</p>
 
-## Быстрый запуск
-
-### Необходимые компоненты
-
-### Установка
+## Установка
 
 ```sh
 npm i -D md-pug-to-html
@@ -159,6 +156,11 @@ npm i -D md-pug-to-html
 
 <p align="right">(<a href="#readme-top">в начало</a>)</p>
 
+## Контакты
+
+Игорь Яшкин - injashkin@gmail.com - https://t.me/jashkin
+Ссылка на проект: https://github.com/injashkin/md-pug-to-html
+
 <!-- ACKNOWLEDGMENTS -->
 
 ## Благодарности
@@ -167,9 +169,11 @@ npm i -D md-pug-to-html
 
 - [Проект от Джона Грубера (JOHN GRUBER) - создателя Markdown](https://daringfireball.net/projects/markdown/)
 
-- [](https://www.markdownguide.org/basic-syntax/#reference-style-links)
+- [Интересный проект о Markdown](https://www.markdownguide.org)
 
-## Пакеты, которые могут быть полезны для разработки
+## Дополнительно
+
+Пакеты, которые могут быть полезны:
 
 - [markdown-to-pug](https://www.npmjs.com/package/markdown-to-pug) - конвертирует Markdown в Pug
 
