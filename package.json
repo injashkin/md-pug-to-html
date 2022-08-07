@@ -1,7 +1,7 @@
 {
   "name": "md-pug-to-html",
   "version": "1.0.6",
-  "description": "",
+  "description": "Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.",
   "main": "index.js",
   "bin": {
     "md-pug-to-html": "./index.js"
@@ -11,7 +11,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/injashkin/md-pug-to-html.git",
-  "keywords": [],
+  "keywords": [
+    "markdown",
+    "pug"
+  ],
   "author": {
     "name": "Igor Jashkin",
     "email": "injashkin@gmail.com",

@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-//const mdPugToHtml = require('./index');
-
 const mdToData = require('./md-to-data');
 
-//function mdPugToHtml() {
 const args = {};
 let sourceDir, destinationDir, templateDir, dataOutDir;
 
@@ -31,7 +28,3 @@ if (args['-d']) {
 } else dataOutDir = 'src/data';
 
 mdToData.separateMd(sourceDir, destinationDir, templateDir, dataOutDir);
-//}
-
-//module.exports = { mdPugToHtml };
-//mdPugToHtml();

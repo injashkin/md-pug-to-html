@@ -94,13 +94,12 @@ function listDir(path) {
 }
 
 module.exports.separateMd = function (srcDir, destDir, templDir, dOutDir) {
-  sourceDir = srcDir; // из какого каталога нужно получить файлы .md
-  destinationDir = destDir; // каталог сборки проекта
-  templateDir = templDir; // каталог шаблона статьи
-  dataOutDir = dOutDir; // каталог вывода файла данных
+  sourceDir = srcDir;
+  destinationDir = destDir;
+  templateDir = templDir;
+  dataOutDir = dOutDir;
 
   mdToHtml.mkDir(`${destinationDir}${path.sep}images`);
 
   listDir(sourceDir);
 };
-
