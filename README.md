@@ -15,6 +15,8 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
+Read in other languages: [Russian](README.ru.md)
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -25,87 +27,83 @@
 <h3 align="center">md-pug-to-html</h3>
 
   <p align="center">
-    Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.
+    Compiles HTML pages from Markdown files based on the Pug template.
     <br />
-    <a href="https://github.com/injashkin/md-pug-to-html"><strong>Изучите документацию »</strong></a>
+    <a href="https://github.com/injashkin/md-pug-to-html"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/injashkin/md-pug-to-html">Демонстрация</a>
+    <a href="https://github.com/injashkin/md-pug-to-html">View Demo</a>
     ·
-    <a href="https://github.com/injashkin/md-pug-to-html/issues">Отчет об ошибках</a>
+    <a href="https://github.com/injashkin/md-pug-to-html/issues">Report Bug</a>
     ·
-    <a href="https://github.com/injashkin/md-pug-to-html/issues">Хотелки</a>
+    <a href="https://github.com/injashkin/md-pug-to-html/issues">Request Feature</a>
   </p>
 </div>
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Содержание</summary>
+  <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#о-проекте">О проекте</a>
+      <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#используемые-технологии">Используемые технологии</a></li>
+        <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li><a href="#установка">Установка</a></li>   
-    <li><a href="#использование">Использование</a></li>
-    <li><a href="#дальнейшее-развитие">Дальнейшее развитие</a></li>
-    <li><a href="#участие-в-проекте">Участие в проекте</a></li>
-    <li><a href="#лицензия">Лицензия</a></li>
-    <li><a href="#контакты">Контакты</a></li>
-    <li><a href="#благодарности">Благодарности</a></li>
-    <li><a href="#дополнительно">Дополнительно</a></li>
+    <li><a href="#installation">Installation</a></li>   
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#additionally">Additionally</a></li>
   </ol>
 </details>
 
 <!-- ABOUT THE PROJECT -->
 
-## О проекте
+## About The Project
 
-Плагин преобразует файлы Markdown в файлы HTML, при этом учитывается разметка, заданная шаблоном Pug. Файлы Markdown могут содержать данные Frontmatter[1], которые преобразуются в метаданные HTML файлов.
+MdPugToHtml uses the Pug template engine to convert Markdown files into HTML pages. These pages are saved in the specified target directory while preserving the full structure of the source directory. Markdown files may contain Frontmatter[1] data. This data will be used as metadata of HTML pages.
 
-Плагин ищет все Markdown файлы в указанном каталоге и всех его подкаталогах, отделяет Frontmatter от контента и на основе данных, полученных из Frontmatter, местоположения файлов `.md` и настроек в строке `"pug-md-to-html"` файла `package.json`, генерирует `html` файлы, которые являются готовыми страницами сайта. Список URL адресов к этим страницам, также генерируется автоматически и помещается в файл `link-list.pug` в виде массива объектов. Каждый объект массива содержит три свойства: название статьи, Url адрес и краткое описание. Используя этот массив можно с помощью цикла сгенерировать список ссылок для перехода к этим страницам.
+The need for MdPugToHtml appeared when creating the project builder [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), but MdPugToHtml can be used independently.
 
-Поля из Frontmatter, такие как title, description, created и др. встраиваются в соответствующие места HTML страниц. Файлы, которые не являются `.md`, просто копируются из исходного каталога в каталог `docs/images`, так как, обычно, это файлы изображений.
-
-Потребность в плагине возникла при создании сборщика [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), но плагин может использоваться независимо.
-
-[1] Markdown Frontmatter - это выделенный тремя дефисами `---` раздел в начале файла markdown, который имеет формат YAML/TOML. Вот пример frontmatter markdown в формате YAML:
+[1] Markdown Frontmatter is a section marked with three hyphens `---` at the beginning of the markdown file, which has the YAML/YAML format. Here is an example of frontmatter markdown in YAML format:
 
 ```
 ---
-title: Краткий справочник по командам Git
+title: A quick guide to Git commands
 created: 2019-05-20
 ---
 
-## Полезные команды по работе с Git и Github
+## Useful commands for working with Git and Github
 ```
 
-<p align="right">(<a href="#readme-top">в начало</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Используемые технологии
+### Built With
 
 - [![Node.js][nodejs.org]][nodejs-url]
 - [![Pug][pug.js]][pug-url]
 - [![gray-matter][gray-matter]][graymatter-url]
 - [![markdown-to-pug][markdown-to-pug]][markdowntopug-url]
 
-<p align="right">(<a href="#readme-top">в начало</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Установка
+## Installation
 
 ```
 npm i -D md-pug-to-html
 ```
 
-<p align="right">(<a href="#readme-top">в начало</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 
-## Использование
+## Usage
 
-В файле `package.json` настраиваем плагин с необходимыми параметрами:
+In the `package.json` file, configure MdPugToHtml with the necessary parameters:
 
 ```json
 "scripts": {
@@ -113,87 +111,92 @@ npm i -D md-pug-to-html
 }
 ```
 
-Значения параметров задаются с помощью ключей:
+Parameter values are set using keys:
 
-- ключ `-i` - путь к каталогу, где находятся файлы markdown (обязательный)
-- ключ `-o` - путь к каталогу сборки проекта (по умолчанию `docs`)
-- ключ `-t` - путь к каталогу шаблона статьи (обязательный)
-- ключ `-d` - путь к каталогу, куда будет сгенерирован файл `linkList.pug` (по умолчанию `src/data`)
+- key `-i` - path to the directory where the markdown files are located (required)
+- key `-o` - path to the project's build directory (default `docs`)
+- key `-t` - path to the article template directory (required)
+- key `-d` - path to the directory where the `linkList.pug` file will be generated (default `src/data`)
 
-Для правильной работы плагина нужно, чтобы присутствовал хотя бы один файл markdown в каталоге `content` (указан с помощью ключа `-i`) и присутствовал шаблон `index.pug` в каталоге `src/pages/article` (указан с помощью ключа `-t`).
+In order for MdPugToHtml to work correctly, at least one markdown file must be present in the `content` directory (specified with the `-i` key) and the `index.pug` template must be present in the `src/pages/article` directory (specified with the `-t` key).
 
-В терминале выполним команду:
+In the terminal, run the command:
 
 ```
 npm run start
 ```
 
-- В каталоге `content` плагин рекурсивно обходит все подкаталоги и ищет файлы markdown.
-- Файлы markdown плагин преобразует в файлы `index.html` в соответствии с шаблоном Pug `src/pages/article/index.pug`.
-- Плагин создает каталог `docs` (если он отсутствовал) и в него помещает файлы `index.html` с сохранением всей структуры подкаталогов каталога `content`.
-- Плагин генерирует файл `src/data/linkList.pug`, содержащий массив объектов `points`. Каждый объект массива имеет свойства: `pathFile` - путь к файлу `index.html`, `title` - заголовок статьи и `description` - краткое описание статьи.
+As a result, the following events will occur:
 
-<p align="right">(<a href="#readme-top">в начало</a>)</p>
+- MdPugToHtml will recursively crawl all subdirectories in the 'content` directory and find markdown files.
+- MdPugToHtml converts markdown files to files `index.html ` according to the Png template `src/pages/article/index.pug`.
+- MdPugToHtml will create a `docs` directory (if it was missing) and put files in it `index.html ` while preserving the entire structure of the subdirectories of the `content` directory.
+- MdPugToHtml will generate a file `src/data/linkList.pug`, which will contain an array of objects called `points`. Each array object has properties:
+  - `pathFile` - path to the file `index.html`
+  - `title` - article title
+  - `description` - brief description of the article
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 
-## Дальнейшее развитие
+## Roadmap
 
-- [ ] Функция 1
-- [ ] Функция 2
+- [ ] Function 1
+- [ ] Function 2
   - [ ] Nested Feature
 
-Полный список предлагаемых улучшений см. в [открытых Issues](https://github.com/injashkin/md-pug-to-html/issues).
+See the [open issues](https://github.com/injashkin/md-pug-to-html/issues) for a full list of proposed features (and known issues).
 
-<p align="right">(<a href="#readme-top">в начало</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 
-## Участие в проекте
+## Contributing
 
-Вы можете оказать любую помощь проекту. Примите в нем участие или предложите улучшения открыв ишью. Будет ценен любой ваш вклад. Не забудьте добавить проекту звезду! Заранее спасибо!
+You can provide any assistance to the project. Take part in it or suggest improvements by opening issues. Any contribution you make will be appreciated. Don't forget to add a star to the project! Thank you in advance!
 
-Если у вас есть идея, которая сделает проект лучше, можете сделать форк репозитория и создать pull request:
+If you have an idea that will make the project better, you can fork the repository and create a pull request:
 
-1. Сделайте Fork проекта
-2. Создайте свою ветку (git checkout -b injashkin/md-pug-to-html)
-3. Внесите изменения в код
-4. Зафиксируйте ваши изменения (git commit -m 'Добавлено то-то и то-то')
-5. Сделайте Push ветки (git push origin injashkin/md-pug-to-html)
-6. Сделайте Pull Request
+1. Fork the Project
+2. Create your Feature Branch (git checkout -b injashkin/md-pug-to-html)
+3. Make changes to the code
+4. Commit your Changes (git commit -m 'Добавлено то-то и то-то')
+5. Push to the Branch (git push origin injashkin/md-pug-to-html)
+6. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">в начало</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Контакты
+## Contact
 
-Игорь Яшкин - injashkin@gmail.com - https://t.me/jashkin
+Igor Jashkin - injashkin@gmail.com - https://t.me/jashkin
 
-Ссылка на проект: https://github.com/injashkin/md-pug-to-html
+Project Link: https://github.com/injashkin/md-pug-to-html
 
 <!-- ACKNOWLEDGMENTS -->
 
-## Благодарности
+## Acknowledgments
 
-- [Данный README создан по шаблону Best-README-Template](https://github.com/othneildrew/Best-README-Template)
+- [This README is based on the Best-README-Template template](https://github.com/othneildrew/Best-README-Template)
 
-- [Проект от Джона Грубера (JOHN GRUBER) - создателя Markdown](https://daringfireball.net/projects/markdown/)
+- [A project from John Gruber, the creator of Markdown](https://daringfireball.net/projects/markdown/)
 
-- [Интересный проект о Markdown](https://www.markdownguide.org)
+- [An interesting project about Markdown](https://www.markdownguide.org)
 
-## Дополнительно
+## Additionally
 
-Пакеты, которые могут быть полезны:
+Packages that may be useful:
 
-- [markdown-to-pug](https://www.npmjs.com/package/markdown-to-pug) - конвертирует Markdown в Pug
+- [markdown-to-pug](https://www.npmjs.com/package/markdown-to-pug) - converts Markdown to Pug
 
-- [markdown-front-matter-json](https://github.com/egavrilov/markdown-front-matter-json) - преобразует Markdown с front-matter в объект JS
+- [markdown-front-matter-json](https://github.com/egavrilov/markdown-front-matter-json) - converts a Markdown containing a frontmatter to a JS object
 
 - [markdown-it-front-matter](https://www.npmjs.com/package/markdown-it-front-matter)
 - [markdown-it-container](https://github.com/markdown-it/markdown-it-container)
 
-- [gray-matter](https://github.com/jonschlinkert/gray-matter) - преобразует Markdown с front-matter в YAML (по умолчанию), но также поддерживает JSON, TOML или Coffee Front-Matter с возможностью установки пользовательских разделителей. Данные может получать из файла и из строки.
+- [gray-matter](https://github.com/jonschlinkert/gray-matter) - converts Markdown containing frontmatter to YAML (by default), but also supports JSON, HTML or Coffee FrontMatter with the ability to set custom delimiters. Data can be received from a file and from a string.
 
-- [article-data](https://www.npmjs.com/package/article-data) - преобразует Markdown с front-matter в объект
+- [article-data](https://www.npmjs.com/package/article-data) - converts a Markdown containing a frontmatter to an object
 - [get-md-content](https://github.com/iamstarkov/get-md-content)
 - [get-md-date](https://github.com/iamstarkov/get-md-date)
 - [get-md-desc](https://github.com/iamstarkov/get-md-desc)
@@ -202,7 +205,7 @@ npm run start
 
 - [frontmatter-markdown-to-json](https://www.npmjs.com/package/frontmatter-markdown-to-json)
 
-<p align="right">(<a href="#readme-top">в начало</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
