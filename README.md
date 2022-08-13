@@ -9,7 +9,6 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-https://img.shields.io/npm/v/md-pug-to-html
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -25,7 +24,7 @@ Read in other languages: [Russian](README.ru.md)
     <img src="https://avatars.githubusercontent.com/u/36812603?v=4" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">md-pug-to-html</h3>
+<h3 align="center">MdPugToHtml</h3>
 
   <p align="center">
     Compiles HTML pages from Markdown files based on the Pug template.
@@ -66,6 +65,8 @@ Read in other languages: [Russian](README.ru.md)
 
 ## About The Project
 
+MdPugToHtml has been fully tested for operability so far only for the CLI.
+
 MdPugToHtml uses the Pug template engine to convert Markdown files into HTML pages. These pages are saved in the specified target directory while preserving the full structure of the source directory. Markdown files may contain Frontmatter[1] data. This data will be used as metadata of HTML pages.
 
 The need for MdPugToHtml appeared when creating the project builder [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), but MdPugToHtml can be used independently.
@@ -104,11 +105,79 @@ npm i -D md-pug-to-html
 
 ## Usage
 
+The example below shows how MdPugToHtml can be used.
+
+Create a directory, for example, `my-site`, and navigate to it:
+
+```
+mkdir my-site
+cd my-site
+```
+
+Create an `package.json` file:
+
+```
+npm init -y
+```
+
+Install MdPugToHtml:
+
+```
+npm i -D md-pug-to-html
+```
+
+In the root directory of the project, create a directory in which you want to post articles. Let it be the `content` directory, and in it create a couple of subdirectories `article1` and `article2`. In each of these two directories, create one file named `index.md `.
+
+Copy the following to the `content/article1/index.md` file:
+
+```
+---
+title: Article one
+description: Brief description of the first article
+create: 2022-08-10
+---
+
+## Title h2 in the first article
+```
+
+Copy the following to the `content/article2/index.md` file:
+
+```
+---
+title: Article two
+description: Brief description of the second article
+create: 2022-08-11
+---
+
+## Title h2 in the second article
+```
+
+Now, in the root directory of the project, create the `src` directory, and in it the `article` directory, where you create the `index.pug` file with the following content:
+
+```pug
+block variables
+
+doctype html
+html(lang= 'en')
+  head
+    meta(charset= 'utf-8')
+    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+    meta(name= 'description' content= description)
+    title= title
+
+  body
+    block main
+      .content
+        .article
+          .creationDate= `Created: ${create}`
+          include from-md.pug
+```
+
 In the `package.json` file, configure MdPugToHtml with the necessary parameters:
 
 ```json
 "scripts": {
-  "start": "md-pug-to-html -i=content -t=src/pages/article",
+  "start": "md-pug-to-html -i=content -t=src/article",
 }
 ```
 
@@ -116,36 +185,151 @@ Parameter values are set using keys:
 
 - key `-i` - path to the directory where the markdown files are located (required)
 - key `-o` - path to the project's build directory (default `docs`)
-- key `-t` - path to the article template directory (required)
+- key `-t` - path to the directory of the article template named `index.pug` (required)
 - key `-d` - path to the directory where the `linkList.pug` file will be generated (default `src/data`)
 
-In order for MdPugToHtml to work correctly, at least one markdown file must be present in the `content` directory (specified with the `-i` key) and the `index.pug` template must be present in the `src/pages/article` directory (specified with the `-t` key).
-
-In the terminal, run the command:
+From the root directory of the project in the terminal, run the command:
 
 ```
 npm run start
 ```
 
-As a result, the following events will occur:
+As a result, MdPugToHtml will do the following:
 
-- MdPugToHtml will recursively crawl all subdirectories in the 'content` directory and find markdown files.
-- MdPugToHtml converts markdown files to files `index.html ` according to the Png template `src/pages/article/index.pug`.
-- MdPugToHtml will create a `docs` directory (if it was missing) and put files in it `index.html ` while preserving the entire structure of the subdirectories of the `content` directory.
+- creates the `docs` directory (if it was missing)
+
+- recursively traverses the subdirectories `article1` and `article2` in the `content` directory and finds files in them `index.md `.
+
+- converts files `index.md ` to pages `index.html ` in accordance with the template `src/article/index.pug` and will place these pages in the `docs` directory while preserving the entire structure of the subdirectories of the `content` directory, i.e. the `article1` and `article2` subdirectories will be created in the `docs` directory.
+
+To file `docs/article1/index.html` the following will be compiled:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Brief description of the first article" />
+    <title>Article one</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: Aug 10 2022</div>
+        <h2>Title h2 in the first article</h2>
+      </div>
+    </div>
+  </body>
+</html>
+```
+
+To file `docs/article2/index.html` the following will be compiled:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Brief description of the second article"
+    />
+    <title>Article two</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: Aug 11 2022</div>
+        <h2>Title h2 in the second article</h2>
+      </div>
+    </div>
+  </body>
+</html>
+```
+
 - MdPugToHtml will generate a file `src/data/linkList.pug`, which will contain an array of objects called `points`. Each array object has properties:
   - `pathFile` - path to the file `index.html`
   - `title` - article title
   - `description` - brief description of the article
+
+The file `src/data/linkList.pug` can be used to create a list of links to articles in blog format. Below is an example of how this can be used.
+
+Create a page template where a list of articles will be displayed. To do this, create a file `list.pug` in the `src` directory, and copy the following into it:
+
+```pug
+block variables
+
+  include ./data/link-list.pug
+
+doctype html
+html(lang= 'en')
+  head
+    meta(charset= 'utf-8')
+    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+
+block main
+  .content
+    .creationDate= pageCreated
+    ul.list__box
+      each point in points
+        li
+          a.list__item(href=point.pathFile)= point.title
+          p= point.description
+```
+
+In `package.json` file, add a line marked with a `+`:
+
+```json
+"scripts": {
+  "start": "md-pug-to-html -i=content -t=src/pages/article",
++ "pug": "pug --pretty src/list.pug -o docs",
+}
+```
+
+From the root directory of the project in the terminal, run the following command:
+
+```
+npm run pug
+```
+
+A file will be created `docs/list.html ` the following content:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+</html>
+<div class="content">
+  <div class="creationDate"></div>
+  <ul class="list__box">
+    <li>
+      <a class="list__item" href="article1/index.html">Article one</a>
+      <p>Brief description of the first article</p>
+    </li>
+    <li>
+      <a class="list__item" href="article2/index.html">Article two</a>
+      <p>Brief description of the second article</p>
+    </li>
+  </ul>
+</div>
+```
+
+If you open this file in a browser, you will see a list of links to articles with a brief description:
+
+![list of links](readme/list-of-links.png)
+
+Clicking on the link will take you to the selected article.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 
 ## Roadmap
-
-- [ ] Function 1
-- [ ] Function 2
-  - [ ] Nested Feature
 
 See the [open issues](https://github.com/injashkin/md-pug-to-html/issues) for a full list of proposed features (and known issues).
 

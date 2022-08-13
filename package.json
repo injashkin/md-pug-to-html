@@ -1,6 +1,6 @@
 {
   "name": "md-pug-to-html",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.",
   "main": "index.js",
   "bin": {
@@ -24,6 +24,7 @@
   "dependencies": {
     "gray-matter": "^4.0.3",
     "markdown-to-pug": "^1.0.11",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "pug-cli": "^1.0.0-alpha6"
   }
 }

@@ -24,7 +24,7 @@
     <img src="https://avatars.githubusercontent.com/u/36812603?v=4" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">md-pug-to-html</h3>
+<h3 align="center">MdPugToHtml</h3>
 
   <p align="center">
     Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.
@@ -65,6 +65,8 @@
 
 ## О проекте
 
+MdPugToHtml полностью проверен на работоспособность пока только для CLI.
+
 MdPugToHtml c помощью шаблонизатора Pug преобразует файлы Markdown в HTML страницы. Эти страницы сохраняются в указанном целевом каталоге с сохранением полной структуры каталога источника. Файлы Markdown могут содержать Frontmatter[1] данные. Эти данные будут использованы как метаданные HTML страниц.
 
 Потребность в MdPugToHtml возникла при создании сборщика [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), но плагин может использоваться независимо.
@@ -103,11 +105,79 @@ npm i -D md-pug-to-html
 
 ## Использование
 
-В файле `package.json` настраиваем MdPugToHtml с необходимыми параметрами:
+Ниже показан пример, как можно использовать MdPugToHtml.
+
+Создайте каталог, например, `my-site`, и перейдите в него:
+
+```
+mkdir my-site
+cd my-site
+```
+
+Создайте файл `package.json`:
+
+```
+npm init -y
+```
+
+Установите MdPugToHtml:
+
+```
+npm i -D md-pug-to-html
+```
+
+В корневом каталоге проекта создайте каталог, в котором вы хотите размещать статьи. Пусть это будет каталог `content`, а в нем создайте пару подкаталогов `article1` и `article2`. В каждом из этих двух каталогов создайте по одному файлу `index.md`.
+
+В файл `content/article1/index.md` скопируйте следующее:
+
+```
+---
+title: Статья первая
+description: Краткое описание первой статьи
+create: 2022-08-10
+---
+
+## Заголовок h2 в первой статье
+```
+
+В файл `content/article2/index.md` скопируйте следующее:
+
+```
+---
+title: Статья вторая
+description: Краткое описание второй статьи
+create: 2022-08-11
+---
+
+## Заголовок h2 во второй статье
+```
+
+Теперь, в корневом каталоге проекта создайте каталог `src`, а в нем каталог `article`, где создайте файл `index.pug` со следующим содержимым:
+
+```pug
+block variables
+
+doctype html
+html(lang= 'ru')
+  head
+    meta(charset= 'utf-8')
+    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+    meta(name= 'description' content= description)
+    title= title
+
+  body
+    block main
+      .content
+        .article
+          .creationDate= `Создано: ${create}`
+          include from-md.pug
+```
+
+В файле `package.json` настройте MdPugToHtml с необходимыми параметрами:
 
 ```json
 "scripts": {
-  "start": "md-pug-to-html -i=content -t=src/pages/article",
+  "start": "md-pug-to-html -i=content -t=src/article",
 }
 ```
 
@@ -115,36 +185,154 @@ npm i -D md-pug-to-html
 
 - ключ `-i` - путь к каталогу, где находятся файлы markdown (обязательный)
 - ключ `-o` - путь к каталогу сборки проекта (по умолчанию `docs`)
-- ключ `-t` - путь к каталогу шаблона статьи (обязательный)
+- ключ `-t` - путь к каталогу шаблона статьи с именем `index.pug` (обязательный)
 - ключ `-d` - путь к каталогу, куда будет сгенерирован файл `linkList.pug` (по умолчанию `src/data`)
 
-Для правильной работы MdPugToHtml нужно, чтобы присутствовал хотя бы один файл markdown в каталоге `content` (указан с помощью ключа `-i`) и присутствовал шаблон `index.pug` в каталоге `src/pages/article` (указан с помощью ключа `-t`).
-
-В терминале выполним команду:
+Из корневого каталога проекта в терминале выполните команду:
 
 ```
 npm run start
 ```
 
-В итоге, произойдут следующие события:
+В итоге, MdPugToHtml сделает следующее:
 
-- MdPugToHtml рекурсивно обойдет все подкаталоги в каталоге `content` и найдет файлы markdown.
-- MdPugToHtml преобразует файлы markdown в файлы `index.html` в соответствии с шаблоном Pug `src/pages/article/index.pug`.
-- MdPugToHtml создаст каталог `docs` (если он отсутствовал) и поместит в него файлы `index.html` с сохранением всей структуры подкаталогов каталога `content`.
+- создаст каталог `docs` (если он отсутствовал)
+
+- рекурсивно обойдет в каталоге `content` подкаталоги `article1` и `article2` и найдет в них файлы `index.md`.
+
+- преобразует файлы `index.md` в страницы `index.html` в соответствии с шаблоном `src/article/index.pug` и поместит эти страницы в каталог `docs` с сохранением всей структуры подкаталогов каталога `content`, т. е. в каталоге `docs` будут созданы подкаталоги `article1` и `article2`.
+
+  В файл `docs/article1/index.html` будет скомпилировано следующее:
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="ru">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="description" content="Краткое описание первой статьи" />
+      <title>Статья первая</title>
+    </head>
+    <body>
+      <div class="content">
+        <div class="article">
+          <div class="creationDate">
+            Создано: Wed Aug 10 2022 03:00:00 GMT+0300 (Москва, стандартное
+            время)
+          </div>
+          <h2>Заголовок h2 в первой статье</h2>
+        </div>
+      </div>
+    </body>
+  </html>
+  ```
+
+  В файл `docs/article2/index.html` будет скомпилировано следующее:
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="ru">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="description" content="Краткое описание второй статьи" />
+      <title>Статья вторая</title>
+    </head>
+    <body>
+      <div class="content">
+        <div class="article">
+          <div class="creationDate">
+            Создано: Thu Aug 11 2022 03:00:00 GMT+0300 (Москва, стандартное
+            время)
+          </div>
+          <h2>Заголовок h2 во второй статье</h2>
+        </div>
+      </div>
+    </body>
+  </html>
+  ```
+
 - MdPugToHtml сгенерирует файл `src/data/linkList.pug`, который будет содержать массив объектов `points`. Каждый объект массива имеет свойства:
   - `pathFile` - путь к файлу `index.html`
   - `title` - заголовок статьи
   - `description` - краткое описание статьи
+
+Файл `src/data/linkList.pug` может быть использован для создания списка ссылок на статьи в формате блога. Ниже приведен пример того, как это может быть использовано.
+
+Создайте шаблон страницы, где будет выводится Список статей. Для этого в каталоге `src` создайте файл `list.pug`, а в него скопируйте следующее:
+
+```pug
+block variables
+
+  include ./data/link-list.pug
+
+doctype html
+html(lang= 'ru')
+  head
+    meta(charset= 'utf-8')
+    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+
+block main
+  .content
+    .creationDate= pageCreated
+    ul.list__box
+      each point in points
+        li
+          a.list__item(href=point.pathFile)= point.title
+          p= point.description
+```
+
+В файле `package.json` добавьте строку помеченную знаком `+`:
+
+```json
+"scripts": {
+  "start": "md-pug-to-html -i=content -t=src/pages/article",
++ "pug": "pug --pretty src/list.pug -o docs",
+}
+```
+
+Из корневого каталога проекта в терминале запустите следующую команду:
+
+```
+npm run pug
+```
+
+Будет создан файл `docs/list.html` следующего содержания:
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+</html>
+<div class="content">
+  <div class="creationDate"></div>
+  <ul class="list__box">
+    <li>
+      <a class="list__item" href="article1/index.html">Статья первая</a>
+      <p>Краткое описание первой статьи</p>
+    </li>
+    <li>
+      <a class="list__item" href="article2/index.html">Статья вторая</a>
+      <p>Краткое описание второй статьи</p>
+    </li>
+  </ul>
+</div>
+```
+
+Если открыть данный файл в браузере, то вы увидите список ссылок на статьи с кратким описанием:
+
+![список ссылок](readme/Список-ссылок.png)
+
+Кликнув по ссылке вы перейдете на выбранную статью.
 
 <p align="right">(<a href="#readme-top">в начало</a>)</p>
 
 <!-- ROADMAP -->
 
 ## Дальнейшее развитие
-
-- [ ] Функция 1
-- [ ] Функция 2
-  - [ ] Nested Feature
 
 Полный список предлагаемых улучшений см. в [открытых Issues](https://github.com/injashkin/md-pug-to-html/issues).
 
