@@ -5,7 +5,7 @@ let md2pug = new (require('markdown-to-pug'))();
 
 let mdToHtml = require('./md-to-pug');
 
-let fileListMd = [];
+let linkList = [];
 
 module.exports.writeFile = function (path, content) {
   try {
@@ -53,11 +53,12 @@ module.exports.compile = function (
     description: data.description,
   };
 
-  fileListMd.push(obj);
+  linkList.push(obj);
+
   mdToHtml.mkDir(dataOutDir);
   mdToHtml.writeFile(
     `${dataOutDir}${path.sep}link-list.pug`,
-    `- const points = ${JSON.stringify(fileListMd)}`
+    `- const points = ${JSON.stringify(linkList)}`
   );
 
   const pugFromMd = compilePugFromMd(content);
@@ -74,4 +75,8 @@ module.exports.compile = function (
     `${pathDestFileObj.dir}${path.sep}index.html`,
     htmlFromPug
   );
+};
+
+module.exports.getLinkList = function () {
+  return linkList;
 };

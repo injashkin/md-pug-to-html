@@ -2,9 +2,9 @@
   "name": "md-pug-to-html",
   "version": "1.2.2",
   "description": "Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.",
-  "main": "index.js",
+  "main": "main.js",
   "bin": {
-    "md-pug-to-html": "./index.js"
+    "md-pug-to-html": "./bin.js"
   },
   "scripts": {
     "md": "node index -i=content -t=src/pages/article",
