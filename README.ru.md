@@ -29,7 +29,7 @@
   <p align="center">
     Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.
     <br />
-    <a href="https://github.com/injashkin/md-pug-to-html"><strong>Изучите документацию »</strong></a>
+    <a href="https://github.com/injashkin/md-pug-to-html/blob/main/README.ru.md"><strong>Изучите документацию »</strong></a>
     <br />
     <br />
     <a href="https://github.com/injashkin/md-pug-to-html">Демонстрация</a>
@@ -107,14 +107,14 @@ npm i -D md-pug-to-html
 
 Ниже показан пример, как можно использовать MdPugToHtml.
 
-Создайте каталог, например, `my-site`, и перейдите в него:
+Откройте терминал и создайте каталог, например, `my-site`, и перейдите в него:
 
 ```
 mkdir my-site
 cd my-site
 ```
 
-Создайте файл `package.json`:
+Создайте файл `package.json`, для этого в терминале введите следующую команду:
 
 ```
 npm init -y
@@ -126,7 +126,7 @@ npm init -y
 npm i -D md-pug-to-html
 ```
 
-В корневом каталоге проекта создайте каталог, в котором вы хотите размещать статьи. Пусть это будет каталог `content`, а в нем создайте пару подкаталогов `article1` и `article2`. В каждом из этих двух каталогов создайте по одному файлу `index.md`.
+В корневом каталоге проекта создайте каталог, в котором вы будите размещать статьи. Пусть это будет каталог `content`, а в нем создайте пару подкаталогов `article1` и `article2`. В каждом из них создайте файл `index.md`.
 
 В файл `content/article1/index.md` скопируйте следующее:
 
@@ -216,10 +216,7 @@ npm run start
     <body>
       <div class="content">
         <div class="article">
-          <div class="creationDate">
-            Создано: Wed Aug 10 2022 03:00:00 GMT+0300 (Москва, стандартное
-            время)
-          </div>
+          <div class="creationDate">Создано: Aug 10 2022</div>
           <h2>Заголовок h2 в первой статье</h2>
         </div>
       </div>
@@ -241,10 +238,7 @@ npm run start
     <body>
       <div class="content">
         <div class="article">
-          <div class="creationDate">
-            Создано: Thu Aug 11 2022 03:00:00 GMT+0300 (Москва, стандартное
-            время)
-          </div>
+          <div class="creationDate">Создано: Aug 11 2022</div>
           <h2>Заголовок h2 во второй статье</h2>
         </div>
       </div>
