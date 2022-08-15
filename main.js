@@ -1,4 +1,5 @@
 const mdToData = require('./md-to-data');
+const mdToPug = require('./md-to-pug');
 
 function mpth({
   sourceDir,
@@ -10,3 +11,4 @@ function mpth({
 }
 
 module.exports = mpth;
+//mpth.linkList = mdToPug.getLinkList();

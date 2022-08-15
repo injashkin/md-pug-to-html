@@ -1,8 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
+let md2pug = new (require('markdown-to-pug'))();
+const pug = require('pug');
 
-const mdToHtml = require('./md-to-pug');
+const mdToPug = require('./md-to-pug');
+
+const options = {
+  pretty: true,
+};
 
 function splitFileContents(pathFileOfSrc, relativeUrlCss, relativeUrlJs) {
   const obj = {};
@@ -24,72 +30,93 @@ function getRelativeUrl(dirUrl) {
   return str;
 }
 
-function handleFileMd(pathFileOfSrc) {
-  const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
-  const pathDestFileObj = path.parse(pathDestFile);
-  const dirOut = path.parse(pathDestFile).dir;
-  const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
-
-  mdToHtml.mkDir(dirOut);
-
-  const relativeUrlCss = getRelativeUrl(dirUrl) + 'index.css';
-  const relativeUrlJs = getRelativeUrl(dirUrl) + 'index.js';
-
-  const fileContentsObj = splitFileContents(
-    pathFileOfSrc,
-    relativeUrlCss,
-    relativeUrlJs
-  );
-  mdToHtml.compile(
-    pathDestFileObj,
-    templateDir,
-    dirUrl,
-    fileContentsObj,
-    dataOutDir
-  );
-}
-
-function handlerStatus(err, status) {
-  const pathFileOrDir = `${this}`;
-  if (err) throw err;
-
-  if (status.isDirectory()) {
-    const pathDirOfSrc = pathFileOrDir;
-    listDir(pathDirOfSrc); // рекурсия
-  } else {
-    const pathFileOfSrc = pathFileOrDir;
-    if (path.extname(pathFileOfSrc) === '.md') {
-      handleFileMd(pathFileOfSrc);
-    } else {
-      /* Если файл не с расширением .md, то он копируется 
-      из каталога источника в целевой каталог*/
-      const pathDestFile = pathFileOrDir.replace(sourceDir, destinationDir);
-
-      fs.copyFileSync(
-        pathFileOfSrc,
-        `${destinationDir}${path.sep}images${path.sep}${
-          path.parse(pathDestFile).base
-        }`
-      );
-    }
-  }
-}
-
-function checkStatus(pathFileOrDir) {
-  fs.stat(pathFileOrDir, handlerStatus.bind(pathFileOrDir));
-}
-
-function parse(filesAndDirs, pathDir) {
-  for (let fileOrDir of filesAndDirs) {
-    pathFileOrDir = `${pathDir}${path.sep}${fileOrDir}`;
-    checkStatus(pathFileOrDir);
-  }
-}
-
-function listDir(path) {
-  fs.readdir(path, (err, filesAndDirs) => {
+function listDir(pathDir) {
+  fs.readdir(pathDir, function (err, filesAndDirs) {
     if (err) throw err;
-    parse(filesAndDirs, path);
+
+    for (let fileOrDir of filesAndDirs) {
+      let pathFileOrDir = `${pathDir}${path.sep}${fileOrDir}`;
+      fs.stat(pathFileOrDir, function (err, status) {
+        const pathFOD = pathFileOrDir;
+        if (err) throw err;
+
+        if (status.isDirectory()) {
+          const pathDirOfSrc = pathFOD;
+          listDir(pathDirOfSrc); // рекурсия
+        } else {
+          const pathFileOfSrc = pathFOD;
+          if (path.extname(pathFileOfSrc) === '.md') {
+            const pathDestFile = pathFileOfSrc.replace(
+              sourceDir,
+              destinationDir
+            );
+            const pathDestFileObj = path.parse(pathDestFile);
+            const dirOut = path.parse(pathDestFile).dir;
+            const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
+
+            mdToPug.mkDir(dirOut);
+
+            const relativeUrlCss = getRelativeUrl(dirUrl) + 'index.css';
+            const relativeUrlJs = getRelativeUrl(dirUrl) + 'index.js';
+
+            const fileContentsObj = splitFileContents(
+              pathFileOfSrc,
+              relativeUrlCss,
+              relativeUrlJs
+            );
+
+            const { content, data } = fileContentsObj;
+
+            const obj = {
+              pathFile: `${dirUrl}${path.sep}index.html`,
+              title: data.title,
+              description: data.description,
+            };
+
+            mdToPug.mkDir(dataOutDir);
+
+            mdToPug.writeFile(
+              `${dataOutDir}${path.sep}link-list.pug`,
+              `- const points = ${JSON.stringify(mdToPug.getLinkList(obj))}`
+            );
+
+            const pugFromMd = md2pug.render(content);
+            mdToPug.mkDir(templateDir);
+            mdToPug.writeFile(
+              `${templateDir}${path.sep}from-md.pug`,
+              pugFromMd
+            );
+
+            function compileHtml(templateFile, data, options) {
+              const compiledFunction = pug.compileFile(templateFile, options);
+              return compiledFunction(data);
+            }
+
+            const htmlFromPug = compileHtml(
+              `${templateDir}${path.sep}index.pug`,
+              data,
+              options
+            );
+
+            mdToPug.writeFile(
+              `${pathDestFileObj.dir}${path.sep}index.html`,
+              htmlFromPug
+            );
+          } else {
+            // Если файл не с расширением .md, то он копируется
+            // из каталога источника в целевой каталог
+            const pathDestFile = pathFOD.replace(sourceDir, destinationDir);
+
+            fs.copyFileSync(
+              pathFileOfSrc,
+              `${destinationDir}${path.sep}images${path.sep}${
+                path.parse(pathDestFile).base
+              }`
+            );
+          }
+        }
+      });
+    }
   });
 }
 
@@ -99,7 +126,7 @@ module.exports.separateMd = function (srcDir, destDir, templDir, dOutDir) {
   templateDir = templDir;
   dataOutDir = dOutDir;
 
-  mdToHtml.mkDir(`${destinationDir}${path.sep}images`);
+  mdToPug.mkDir(`${destinationDir}${path.sep}images`);
 
   listDir(sourceDir);
 };

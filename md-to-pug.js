@@ -1,9 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const pug = require('pug');
-let md2pug = new (require('markdown-to-pug'))();
-
-let mdToHtml = require('./md-to-pug');
 
 let linkList = [];
 
@@ -25,58 +22,7 @@ module.exports.mkDir = function (dir) {
   }
 };
 
-function compilePugFromMd(content) {
-  return md2pug.render(content);
-}
-
-function compileHtml(templateFile, data, options) {
-  const compiledFunction = pug.compileFile(templateFile, options);
-  return compiledFunction(data);
-}
-
-const options = {
-  pretty: true,
-};
-
-module.exports.compile = function (
-  pathDestFileObj,
-  templateDir,
-  dirUrl,
-  fileContentsObj,
-  dataOutDir
-) {
-  const { content, data } = fileContentsObj;
-
-  const obj = {
-    pathFile: `${dirUrl}${path.sep}index.html`,
-    title: data.title,
-    description: data.description,
-  };
-
+module.exports.getLinkList = function (obj) {
   linkList.push(obj);
-
-  mdToHtml.mkDir(dataOutDir);
-  mdToHtml.writeFile(
-    `${dataOutDir}${path.sep}link-list.pug`,
-    `- const points = ${JSON.stringify(linkList)}`
-  );
-
-  const pugFromMd = compilePugFromMd(content);
-  mdToHtml.mkDir(templateDir);
-  mdToHtml.writeFile(`${templateDir}${path.sep}from-md.pug`, pugFromMd);
-
-  const htmlFromPug = compileHtml(
-    `${templateDir}${path.sep}index.pug`,
-    data,
-    options
-  );
-
-  mdToHtml.writeFile(
-    `${pathDestFileObj.dir}${path.sep}index.html`,
-    htmlFromPug
-  );
-};
-
-module.exports.getLinkList = function () {
   return linkList;
 };
