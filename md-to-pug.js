@@ -22,7 +22,15 @@ module.exports.mkDir = function (dir) {
   }
 };
 
-module.exports.getLinkList = function (obj) {
+module.exports.addItemToLinkList = function (fileData, dirUrl) {
+  const { data } = fileData;
+
+  const obj = {
+    pathFile: `${dirUrl}${path.sep}index.html`,
+    title: data.title,
+    description: data.description,
+  };
+
   linkList.push(obj);
   return linkList;
 };

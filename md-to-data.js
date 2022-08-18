@@ -10,6 +10,11 @@ const options = {
   pretty: true,
 };
 
+function compileHtml(templateFile, data, options) {
+  const compiledFunction = pug.compileFile(templateFile, options);
+  return compiledFunction(data);
+}
+
 function splitFileContents(pathFileOfSrc, relativeUrlCss, relativeUrlJs) {
   const obj = {};
   const contentMixed = fs.readFileSync(pathFileOfSrc);
@@ -59,26 +64,26 @@ function listDir(pathDir) {
             const relativeUrlCss = getRelativeUrl(dirUrl) + 'index.css';
             const relativeUrlJs = getRelativeUrl(dirUrl) + 'index.js';
 
-            const fileContentsObj = splitFileContents(
+            const fileData = splitFileContents(
               pathFileOfSrc,
               relativeUrlCss,
               relativeUrlJs
             );
 
-            const { content, data } = fileContentsObj;
-
-            const obj = {
-              pathFile: `${dirUrl}${path.sep}index.html`,
-              title: data.title,
-              description: data.description,
-            };
+            const linkList = mdToPug.addItemToLinkList(fileData, dirUrl);
 
             mdToPug.mkDir(dataOutDir);
 
+            // Данный набор команд можно выполнить один раз
+            // после заполнения массива
+            // --------------
             mdToPug.writeFile(
               `${dataOutDir}${path.sep}link-list.pug`,
-              `- const points = ${JSON.stringify(mdToPug.getLinkList(obj))}`
+              `- const points = ${JSON.stringify(linkList)}`
             );
+            // --------------
+
+            const { content } = fileData;
 
             const pugFromMd = md2pug.render(content);
             mdToPug.mkDir(templateDir);
@@ -87,10 +92,7 @@ function listDir(pathDir) {
               pugFromMd
             );
 
-            function compileHtml(templateFile, data, options) {
-              const compiledFunction = pug.compileFile(templateFile, options);
-              return compiledFunction(data);
-            }
+            const { data } = fileData;
 
             const htmlFromPug = compileHtml(
               `${templateDir}${path.sep}index.pug`,
