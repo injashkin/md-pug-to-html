@@ -71,32 +71,23 @@ function listDir(pathDir) {
             );
 
             const linkList = mdToPug.addItemToLinkList(fileData, dirUrl);
+            console.log(linkList);
 
             mdToPug.mkDir(dataOutDir);
 
-            // Данный набор команд можно выполнить один раз
-            // после заполнения массива
-            // --------------
-            mdToPug.writeFile(
-              `${dataOutDir}${path.sep}link-list.pug`,
-              `- const points = ${JSON.stringify(linkList)}`
-            );
-            // --------------
+            // const { content } = fileData;
+            const pugFromMd = md2pug.render(fileData.content);
 
-            const { content } = fileData;
-
-            const pugFromMd = md2pug.render(content);
             mdToPug.mkDir(templateDir);
             mdToPug.writeFile(
               `${templateDir}${path.sep}from-md.pug`,
               pugFromMd
             );
 
-            const { data } = fileData;
-
+            // const { data } = fileData;
             const htmlFromPug = compileHtml(
               `${templateDir}${path.sep}index.pug`,
-              data,
+              fileData.data,
               options
             );
 
@@ -104,6 +95,15 @@ function listDir(pathDir) {
               `${pathDestFileObj.dir}${path.sep}index.html`,
               htmlFromPug
             );
+
+            // Данную команду можно выполнить один раз
+            // после заполнения массива linkList
+            // --------------
+            mdToPug.writeFile(
+              `${dataOutDir}${path.sep}link-list.pug`,
+              `- const points = ${JSON.stringify(linkList)}`
+            );
+            // --------------
           } else {
             // Если файл не с расширением .md, то он копируется
             // из каталога источника в целевой каталог
