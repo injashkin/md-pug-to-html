@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
@@ -9,6 +11,8 @@ const mdToPug = require('./md-to-pug');
 const options = {
   pretty: true,
 };
+
+exports.linkList = [];
 
 function compileHtml(templateFile, data, options) {
   const compiledFunction = pug.compileFile(templateFile, options);
@@ -35,100 +39,118 @@ function getRelativeUrl(dirUrl) {
   return str;
 }
 
-function listDir(pathDir) {
-  fs.readdir(pathDir, function (err, filesAndDirs) {
-    if (err) throw err;
+exports.listDir = function (
+  sourceDir,
+  sourceDir2,
+  destinationDir,
+  templateDir
+) {
+  try {
+    const filesAndDirs = fs.readdirSync(sourceDir2);
 
     for (let fileOrDir of filesAndDirs) {
-      let pathFileOrDir = `${pathDir}${path.sep}${fileOrDir}`;
-      fs.stat(pathFileOrDir, function (err, status) {
-        const pathFOD = pathFileOrDir;
-        if (err) throw err;
+      let pathFileOrDir = `${sourceDir2}${path.sep}${fileOrDir}`;
 
-        if (status.isDirectory()) {
-          const pathDirOfSrc = pathFOD;
-          listDir(pathDirOfSrc); // рекурсия
+      const status = fs.statSync(pathFileOrDir);
+      const pathFOD = pathFileOrDir;
+
+      if (status.isDirectory()) {
+        const pathDirOfSrc = pathFOD;
+        this.listDir(sourceDir, pathDirOfSrc, destinationDir, templateDir); // рекурсия
+      } else {
+        const pathFileOfSrc = pathFOD;
+        if (path.extname(pathFileOfSrc) === '.md') {
+          const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
+          const pathDestFileObj = path.parse(pathDestFile);
+          const dirOut = path.parse(pathDestFile).dir;
+          const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
+
+          mdToPug.mkDir(dirOut);
+
+          const relativeUrlCss = getRelativeUrl(dirUrl) + 'index.css';
+          const relativeUrlJs = getRelativeUrl(dirUrl) + 'index.js';
+
+          const fileData = splitFileContents(
+            pathFileOfSrc,
+            relativeUrlCss,
+            relativeUrlJs
+          );
+
+          this.addItemToLinkList(fileData, dirUrl);
+
+          const pugFromMd = md2pug.render(fileData.content);
+
+          mdToPug.mkDir(templateDir);
+          mdToPug.writeFile(`${templateDir}${path.sep}from-md.pug`, pugFromMd);
+
+          const htmlFromPug = compileHtml(
+            `${templateDir}${path.sep}index.pug`,
+            fileData.data,
+            options
+          );
+
+          mdToPug.writeFile(
+            `${pathDestFileObj.dir}${path.sep}index.html`,
+            htmlFromPug
+          );
         } else {
-          const pathFileOfSrc = pathFOD;
-          if (path.extname(pathFileOfSrc) === '.md') {
-            const pathDestFile = pathFileOfSrc.replace(
-              sourceDir,
-              destinationDir
-            );
-            const pathDestFileObj = path.parse(pathDestFile);
-            const dirOut = path.parse(pathDestFile).dir;
-            const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
+          // Если файл не с расширением .md, то он копируется
+          // из каталога источника в целевой каталог
+          const pathDestFile = pathFOD.replace(sourceDir, destinationDir);
 
-            mdToPug.mkDir(dirOut);
-
-            const relativeUrlCss = getRelativeUrl(dirUrl) + 'index.css';
-            const relativeUrlJs = getRelativeUrl(dirUrl) + 'index.js';
-
-            const fileData = splitFileContents(
-              pathFileOfSrc,
-              relativeUrlCss,
-              relativeUrlJs
-            );
-
-            const linkList = mdToPug.addItemToLinkList(fileData, dirUrl);
-            console.log(linkList);
-
-            mdToPug.mkDir(dataOutDir);
-
-            // const { content } = fileData;
-            const pugFromMd = md2pug.render(fileData.content);
-
-            mdToPug.mkDir(templateDir);
-            mdToPug.writeFile(
-              `${templateDir}${path.sep}from-md.pug`,
-              pugFromMd
-            );
-
-            // const { data } = fileData;
-            const htmlFromPug = compileHtml(
-              `${templateDir}${path.sep}index.pug`,
-              fileData.data,
-              options
-            );
-
-            mdToPug.writeFile(
-              `${pathDestFileObj.dir}${path.sep}index.html`,
-              htmlFromPug
-            );
-
-            // Данную команду можно выполнить один раз
-            // после заполнения массива linkList
-            // --------------
-            mdToPug.writeFile(
-              `${dataOutDir}${path.sep}link-list.pug`,
-              `- const points = ${JSON.stringify(linkList)}`
-            );
-            // --------------
-          } else {
-            // Если файл не с расширением .md, то он копируется
-            // из каталога источника в целевой каталог
-            const pathDestFile = pathFOD.replace(sourceDir, destinationDir);
-
-            fs.copyFileSync(
-              pathFileOfSrc,
-              `${destinationDir}${path.sep}images${path.sep}${
-                path.parse(pathDestFile).base
-              }`
-            );
-          }
+          fs.copyFileSync(
+            pathFileOfSrc,
+            `${destinationDir}${path.sep}images${path.sep}${
+              path.parse(pathDestFile).base
+            }`
+          );
         }
-      });
+      }
     }
-  });
-}
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-module.exports.separateMd = function (srcDir, destDir, templDir, dOutDir) {
-  sourceDir = srcDir;
-  destinationDir = destDir;
-  templateDir = templDir;
-  dataOutDir = dOutDir;
+exports.separateMd = function (srcDir, destDir, templDir, dOutDir) {
+  const sourceDir = srcDir;
+  const sourceDir2 = sourceDir;
+  const destinationDir = destDir;
+  const templateDir = templDir;
+  const dataOutDir = dOutDir;
 
   mdToPug.mkDir(`${destinationDir}${path.sep}images`);
+  mdToPug.mkDir(dataOutDir);
 
-  listDir(sourceDir);
+  this.listDir(sourceDir, sourceDir2, destinationDir, templateDir);
+
+  mdToPug.writeFile(
+    `${dataOutDir}${path.sep}link-list.pug`,
+    `- const points = ${JSON.stringify(this.linkList)}`
+  );
+};
+
+exports.addItemToLinkList = function (fileData, dirUrl) {
+  const { data } = fileData;
+
+  const obj = {
+    pathFile: `${dirUrl}${path.sep}index.html`,
+    title: data.title,
+    description: data.description,
+  };
+
+  this.linkList.push(obj);
+};
+
+exports.init = function ({
+  sourceDir,
+  destinationDir = 'docs',
+  templateDir,
+  dataOutDir = 'src/data',
+}) {
+  this.separateMd(sourceDir, destinationDir, templateDir, dataOutDir);
+};
+
+exports.getList = function () {
+  return this.linkList;
 };
