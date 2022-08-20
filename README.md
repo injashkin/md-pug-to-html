@@ -51,7 +51,8 @@ Read in other languages: [Russian](README.ru.md)
       </ul>
     </li>
     <li><a href="#installation">Installation</a></li>   
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#usage-CLI">Using CLI</a></li>
+    <li><a href="#usage-API">Using API</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -64,8 +65,6 @@ Read in other languages: [Russian](README.ru.md)
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
-
-MdPugToHtml has been fully tested for operability so far only for the CLI.
 
 MdPugToHtml uses the Pug template engine to convert Markdown files into HTML pages. These pages are saved in the specified target directory while preserving the full structure of the source directory. Markdown files may contain Frontmatter[1] data. This data will be used as metadata of HTML pages.
 
@@ -103,7 +102,7 @@ npm i -D md-pug-to-html
 
 <!-- USAGE EXAMPLES -->
 
-## Usage
+## Usage CLI
 
 The example below shows how MdPugToHtml can be used.
 
@@ -324,6 +323,40 @@ If you open this file in a browser, you will see a list of links to articles wit
 ![list of links](readme/list-of-links.png)
 
 Clicking on the link will take you to the selected article.
+
+## Using API
+
+```js
+const mpth = require('md-pug-to-html');
+
+const options = {
+  sourceDir: 'content',
+  templateDir: 'src/article',
+};
+
+// Initialization
+mpth.init(options);
+
+// List of created pages
+const list = mpth.getList();
+```
+
+In `options` you can specify:
+
+- `sourceDir` - directory with Markdown articles (required)
+- `templateDir` - directory with a template for article pages (required)
+- `destinationDir` - usually, this is the project's build directory (by default `destinationDir: 'docs'`)
+- `dataOutDir` - the directory where the `link-list.pug` file will be stored (by default `dataOutDir: 'src/data',`)
+
+`init()` results in the creation of all files specified in [Using CLI](#using-CLI).
+
+`getList()` returns a list of created pages in the form of an array of objects, each object of which contains:
+
+- `pathFile` - the path to the article page file `index.html `
+- `title` - article title
+- `description` - brief description of the article
+
+For more information, see [Using CLI](#using-CLI).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

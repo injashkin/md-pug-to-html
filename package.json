@@ -1,6 +1,6 @@
 {
   "name": "md-pug-to-html",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.",
   "main": "md-to-data.js",
   "bin": {
