@@ -8,6 +8,23 @@ const pug = require('pug');
 
 const mdToPug = require('./md-to-pug');
 
+const templatePug = `block variables
+
+doctype html
+html(lang= 'ru')
+  head
+    meta(charset= 'utf-8')
+    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+    meta(name= 'description' content= description)
+    title= title
+
+  body
+    block main
+      .content
+        .article
+          .creationDate= \`Created: \${create}\`
+          include from-md.pug`;
+
 const options = {
   pretty: true,
 };
@@ -119,6 +136,12 @@ exports.separateMd = function (srcDir, destDir, templDir, dOutDir) {
   const templateDir = templDir;
   const dataOutDir = dOutDir;
 
+  if (!fs.existsSync(`${templateDir}${path.sep}index.pug`)) {
+    mdToPug.mkDir(templateDir);
+
+    mdToPug.writeFile(`${templateDir}${path.sep}index.pug`, templatePug);
+  }
+
   mdToPug.mkDir(`${destinationDir}${path.sep}images`);
   mdToPug.mkDir(dataOutDir);
 
@@ -145,7 +168,7 @@ exports.addItemToLinkList = function (fileData, dirUrl) {
 exports.init = function ({
   sourceDir,
   destinationDir = 'docs',
-  templateDir,
+  templateDir = 'src/article',
   dataOutDir = 'src/data',
 }) {
   this.separateMd(sourceDir, destinationDir, templateDir, dataOutDir);

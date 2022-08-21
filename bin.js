@@ -13,7 +13,7 @@ process.argv.slice(2).forEach((option) => {
 
 if (args['-i']) {
   sourceDir = `${args['-i']}`; // из какого каталога нужно получить файлы .md
-} else console.log('ОШИБКА: Не задан каталог источника с ключом -i=');
+} else console.log('ОШИБКА: Не задан каталог источника');
 
 if (args['-o']) {
   destinationDir = `${args['-o']}`; // каталог сборки проекта
@@ -21,7 +21,7 @@ if (args['-o']) {
 
 if (args['-t']) {
   templateDir = `${args['-t']}`; // каталог шаблона статьи
-} else console.log('ОШИБКА: Не задан каталог шаблона статьи с ключом -o=');
+} else templateDir = 'src/article';
 
 if (args['-d']) {
   dataOutDir = `${args['-d']}`; // каталог вывода файла данных
