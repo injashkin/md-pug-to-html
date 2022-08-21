@@ -51,8 +51,14 @@ Read in other languages: [Russian](README.ru.md)
       </ul>
     </li>
     <li><a href="#installation">Installation</a></li>   
-    <li><a href="#usage-CLI">Using CLI</a></li>
-    <li><a href="#usage-API">Using API</a></li>
+    <li>
+      <a href="#using-CLI">Using CLI</a>
+      <ul>
+        <li><a href="#the-easy-way"> The easy way</a></li>
+        <li><a href="#advanced-way">Advanced way</a></li>
+      </ul>
+    </li>    
+    <li><a href="#using-API">Using API</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -66,7 +72,8 @@ Read in other languages: [Russian](README.ru.md)
 
 ## About The Project
 
-MdPugToHtml uses the Pug template engine to convert Markdown files into HTML pages. These pages are saved in the specified target directory while preserving the full structure of the source directory. Markdown files may contain Frontmatter[1] data. This data will be used as metadata of HTML pages.
+MdPugToHtml can massively convert Markdown files to HTML pages. In this case, a Pug template can be specified, according to which all these pages will be converted.
+These pages are saved in the specified directory while preserving the full structure of the source directory (with Markdown files). Markdown files may contain Frontmatter[1] data. This data will be used as metadata of HTML pages.
 
 The need for MdPugToHtml appeared when creating the project builder [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), but MdPugToHtml can be used independently.
 
@@ -102,18 +109,71 @@ npm i -D md-pug-to-html
 
 <!-- USAGE EXAMPLES -->
 
-## Usage CLI
+## Using CLI
 
-The example below shows how MdPugToHtml can be used.
+### The easy way
 
-Create a directory, for example, `my-site`, and navigate to it:
+This method allows you to convert these files into HTML pages by specifying just a directory with Markdown files. And, additionally, get a file with a list of converted files, as well as a Pug template file, on the basis of which all Markdown files were converted to HTML files.
+
+Open a terminal, create a directory, for example, `my-site`, and navigate to it:
 
 ```
 mkdir my-site
 cd my-site
 ```
 
-Create an `package.json` file:
+Create a `package.json` file, to do this, enter the following command in the terminal:
+
+```
+npm init -y
+```
+
+Install MdPugToHtml:
+
+```
+npm i -D md-pug-to-html
+```
+
+In the `package.json` file, use the `-i` key to specify the directory where the Markdown files are located:
+
+```json
+"scripts": {
+  "start": "md-pug-to-html -i=content",
+}
+```
+
+The `content` directory is specified here. This means that it must be located in the same directory as the `package.json` file. If the Markdown files are located in a different location, specify a different path, for example:
+
+```json
+"scripts": {
+  "start": "md-pug-to-html -i=/home/my/articles",
+}
+```
+
+From the `my-site` directory in the terminal, run the command:
+
+```
+npm run start
+```
+
+As a result, a `docs` directory will be created, which will contain HTML pages converted from Markdown files.
+
+Also, two files will be created that may be useful to you:
+
+- file `src/data/link-list.pug`, which will contain an array of objects. This array can be used to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
+
+- file `src/article/index.pug` with the Pug template, according to which all HTML pages are formatted. You can change the template and restart the `npm run start` command again. The articles will be reformatted according to the new template.
+
+### Advanced way
+
+Open a terminal, create a directory, for example, `my-site`, and navigate to it:
+
+```
+mkdir my-site
+cd my-site
+```
+
+Create a `package.json` file, to do this, enter the following command in the terminal:
 
 ```
 npm init -y
@@ -184,7 +244,7 @@ Parameter values are set using keys:
 
 - key `-i` - path to the directory where the markdown files are located (required)
 - key `-o` - path to the project's build directory (default `docs`)
-- key `-t` - path to the directory of the article template named `index.pug` (required)
+- key `-t` - path to the directory of the article template named `index.pug` (by default `src/article`)
 - key `-d` - path to the directory where the `linkList.pug` file will be generated (default `src/data`)
 
 From the root directory of the project in the terminal, run the command:
