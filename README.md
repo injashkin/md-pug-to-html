@@ -85,7 +85,7 @@ created: 2019-05-20
 - [![Node.js][nodejs.org]][nodejs-url]
 - [![Pug][pug.js]][pug-url]
 - [![gray-matter][gray-matter]][graymatter-url]
-- [![markdown-to-pug][markdown-to-pug]][markdowntopug-url]
+- [![markdown-it][markdown-it]][markdownit-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -494,5 +494,5 @@ Packages that may be useful:
 [pug-url]: https://pugjs.org/
 [gray-matter]: https://img.shields.io/badge/GrayMatter-35495E?style=for-the-badge&logo=markdown&logoColor=4FC08D
 [graymatter-url]: https://www.npmjs.com/package/gray-matter
-[markdown-to-pug]: https://img.shields.io/badge/MarkdownToPug-DD0031?style=for-the-badge&logo=markdown&logoColor=white
-[markdowntopug-url]: https://www.npmjs.com/package/markdown-to-pug
+[markdown-it]: https://img.shields.io/badge/MarkdownIt-DD0031?style=for-the-badge&logo=markdown&logoColor=white
+[markdownit-url]: https://www.npmjs.com/package/markdown-it
