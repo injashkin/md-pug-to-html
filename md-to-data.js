@@ -3,7 +3,9 @@
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
-let md2pug = new (require('markdown-to-pug'))();
+const MarkdownIt = require('markdown-it'),
+  md = new MarkdownIt();
+
 const pug = require('pug');
 
 const mdToPug = require('./md-to-pug');
@@ -95,10 +97,10 @@ exports.listDir = function (
 
           this.addItemToLinkList(fileData, dirUrl);
 
-          const pugFromMd = md2pug.render(fileData.content);
+          const htmlFromMd = md.render(fileData.content);
 
           mdToPug.mkDir(templateDir);
-          mdToPug.writeFile(`${templateDir}${path.sep}from-md.pug`, pugFromMd);
+          mdToPug.writeFile(`${templateDir}${path.sep}from-md.pug`, htmlFromMd);
 
           const htmlFromPug = compileHtml(
             `${templateDir}${path.sep}index.pug`,
