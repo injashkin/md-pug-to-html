@@ -41,32 +41,22 @@ Read in other languages: [Russian](README.ru.md)
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li><a href="#installation">Installation</a></li>   
-    <li>
-      <a href="#using-CLI">Using CLI</a>
-      <ul>
-        <li><a href="#the-easy-way"> The easy way</a></li>
-        <li><a href="#advanced-way">Advanced way</a></li>
-      </ul>
-    </li>    
-    <li><a href="#using-API">Using API</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-    <li><a href="#additionally">Additionally</a></li>
-  </ol>
-</details>
+
+## Table of Contents
+
+- [About The Project](#about-the-project)
+- [Built With](#built-with)
+- [Installation](#installation)
+- [Using CLI](#using-CLI)
+  - [The easy way](#the-easy-way)
+  - [Advanced way](#advanced-way)
+- [Using API](#using-API)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgments](#acknowledgments)
+- [Additionally](#additionally)
 
 <!-- ABOUT THE PROJECT -->
 

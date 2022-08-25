@@ -13,7 +13,9 @@
   "repository": "https://github.com/injashkin/md-pug-to-html.git",
   "keywords": [
     "markdown",
-    "pug"
+    "pug",
+    "site",
+    "html"
   ],
   "author": {
     "name": "Igor Jashkin",
