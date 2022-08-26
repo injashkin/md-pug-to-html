@@ -80,13 +80,12 @@ exports.listDir = function (
         const pathFileOfSrc = pathFOD;
         const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
         const pathDestFileObj = path.parse(pathDestFile);
+        const dirOut = path.parse(pathDestFile).dir;
+        const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
+
+        mdToPug.mkDir(dirOut);
 
         if (path.extname(pathFileOfSrc) === '.md') {
-          const dirOut = path.parse(pathDestFile).dir;
-          const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
-
-          mdToPug.mkDir(dirOut);
-
           const relativeUrlCss = getRelativeUrl(dirUrl) + 'index.css';
           const relativeUrlJs = getRelativeUrl(dirUrl) + 'index.js';
 
