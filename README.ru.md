@@ -391,7 +391,7 @@ const list = mpth.getList();
 В `options` можно указать:
 
 - `sourceDir` - каталог со статьями Markdown (обязательно)
-- `templateDir` - каталог с шаблоном для страниц статей (обязательно)
+- `templateDir` - каталог с шаблоном для страниц статей (по умолчанию будет сгенерирован)
 - `destinationDir` - обычно, это каталог сборки проекта (по умолчанию `destinationDir: 'docs'`)
 - `dataOutDir` - каталог, где будет хранится файл `link-list.pug` (по умолчанию `dataOutDir: 'src/data',`)
 

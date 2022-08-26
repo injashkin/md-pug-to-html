@@ -394,7 +394,7 @@ const list = mpth.getList();
 In `options` you can specify:
 
 - `sourceDir` - directory with Markdown articles (required)
-- `templateDir` - directory with a template for article pages (required)
+- `templateDir` - directory with a template for article pages (by default, it will be generated)
 - `destinationDir` - usually, this is the project's build directory (by default `destinationDir: 'docs'`)
 - `dataOutDir` - the directory where the `link-list.pug` file will be stored (by default `dataOutDir: 'src/data',`)
 
