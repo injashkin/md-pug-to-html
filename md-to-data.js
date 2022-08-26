@@ -78,9 +78,10 @@ exports.listDir = function (
         this.listDir(sourceDir, pathDirOfSrc, destinationDir, templateDir); // рекурсия
       } else {
         const pathFileOfSrc = pathFOD;
+        const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
+        const pathDestFileObj = path.parse(pathDestFile);
+
         if (path.extname(pathFileOfSrc) === '.md') {
-          const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
-          const pathDestFileObj = path.parse(pathDestFile);
           const dirOut = path.parse(pathDestFile).dir;
           const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
 
@@ -113,16 +114,10 @@ exports.listDir = function (
             htmlFromPug
           );
         } else {
-          // Если файл не с расширением .md, то он копируется
-          // из каталога источника в целевой каталог
+          // Если файл не с расширением .md, то он просто копируется
+          // в каталог статьи
           const pathDestFile = pathFOD.replace(sourceDir, destinationDir);
-
-          fs.copyFileSync(
-            pathFileOfSrc,
-            `${destinationDir}${path.sep}images${path.sep}${
-              path.parse(pathDestFile).base
-            }`
-          );
+          fs.copyFileSync(pathFileOfSrc, pathDestFile);
         }
       }
     }
@@ -144,7 +139,6 @@ exports.separateMd = function (srcDir, destDir, templDir, dOutDir) {
     mdToPug.writeFile(`${templateDir}${path.sep}index.pug`, templatePug);
   }
 
-  mdToPug.mkDir(`${destinationDir}${path.sep}images`);
   mdToPug.mkDir(dataOutDir);
 
   this.listDir(sourceDir, sourceDir2, destinationDir, templateDir);
