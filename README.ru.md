@@ -72,7 +72,7 @@ MdPugToHtml может массово конвертировать файлы Ma
 ```
 ---
 title: Краткий справочник по командам Git
-created: 2019-05-20
+create: 2019-05-20
 ---
 
 ## Полезные команды по работе с Git и Github
@@ -219,7 +219,7 @@ html(lang= 'ru')
       .content
         .article
           .creationDate= `Создано: ${create}`
-          include from-md.pug
+          include from-md.html
 ```
 
 В файле `package.json` настройте MdPugToHtml с необходимыми параметрами:

@@ -25,7 +25,7 @@ html(lang= 'ru')
       .content
         .article
           .creationDate= \`Created: \${create}\`
-          include from-md.pug`;
+          include from-md.html`;
 
 const options = {
   pretty: true,
@@ -100,7 +100,10 @@ exports.listDir = function (
           const htmlFromMd = md.render(fileData.content);
 
           mdToPug.mkDir(templateDir);
-          mdToPug.writeFile(`${templateDir}${path.sep}from-md.pug`, htmlFromMd);
+          mdToPug.writeFile(
+            `${templateDir}${path.sep}from-md.html`,
+            htmlFromMd
+          );
 
           const htmlFromPug = compileHtml(
             `${templateDir}${path.sep}index.pug`,

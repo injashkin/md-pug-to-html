@@ -219,7 +219,7 @@ html(lang= 'en')
       .content
         .article
           .creationDate= `Created: ${create}`
-          include from-md.pug
+          include from-md.html
 ```
 
 In the `package.json` file, configure MdPugToHtml with the necessary parameters:
@@ -422,7 +422,7 @@ See the [open issues](https://github.com/injashkin/md-pug-to-html/issues) for a 
 
 ## Contributing
 
-You can make any contribution to the project. How to do this, read in[CONTRIBUTING](CONTRIBUTING.md)
+You can make any contribution to the project. How to do this, read in [CONTRIBUTING](CONTRIBUTING.md)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
