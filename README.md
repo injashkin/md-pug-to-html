@@ -62,12 +62,33 @@ Read in other languages: [Russian](README.ru.md)
 
 ## About The Project
 
-MdPugToHtml can massively convert Markdown files to HTML pages. In this case, a Pug template can be specified, according to which all these pages will be converted.
-These pages are saved in the specified directory while preserving the full structure of the source directory (with Markdown files). Markdown files may contain Frontmatter[1] data. This data will be used as metadata of HTML pages.
+MdPugToHtml massively converts Markdown files to HTML pages using the Pug template. Also, MdPugToHtml generates an array of objects, which contains the following data for each created HTML page:
 
-The need for MdPugToHtml appeared when creating the project builder [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), but MdPugToHtml can be used independently.
+- path to the HTML page file
+- HTML page title
+- a brief description of the HTML page
 
-[1] Markdown Frontmatter is a section marked with three hyphens `---` at the beginning of the markdown file, which has the YAML/YAML format. Here is an example of frontmatter markdown in YAML format:
+This array of objects can be obtained either using the API method, or, if the CLI is used, in the `link-list.pug` file, which looks something like this:
+
+```json
+- const points = [
+  {
+    "pathFile":"article1/index.html",
+    "title":"Title of the first article",
+    "description":"Brief description of the first article"
+  },
+  {
+    "pathFile":"article2/index.html",
+    "title":"Title of the second article",
+    "description":"Brief description of the second article"
+  },
+  ...
+]
+```
+
+In the specified directory, MdPugToHtml traverses recursively all subdirectories and finds Markdown files, converting them to HTML pages in accordance with the specified Pug template. Then places the converted pages in the specified output directory. The structure of the source directory is completely preserved in the output directory.
+
+Markdown files may contain Frontmatter data. Frontmatter is a section at the beginning of the file, highlighted on both sides with three hyphens `---`. Frontmatter can be written in any of the YAML/TOML/JSON formats. Here is an example of how the Frontmatter is written in the YAML format in the Markdown file:
 
 ```
 ---
@@ -78,14 +99,16 @@ created: 2019-05-20
 ## Useful commands for working with Git and Github
 ```
 
+The need for the MdPugToHtml converter arose when creating a static page collector [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), but MdPugToHtml can be used independently.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
-- [![Node.js][nodejs.org]][nodejs-url]
-- [![Pug][pug.js]][pug-url]
 - [![gray-matter][gray-matter]][graymatter-url]
 - [![markdown-it][markdown-it]][markdownit-url]
+- [![Node.js][nodejs.org]][nodejs-url]
+- [![Pug][pug.js]][pug-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -62,30 +62,53 @@
 
 ## О проекте
 
-MdPugToHtml может массово конвертировать файлы Markdown в HTML страницы. При этом может быть указан шаблон Pug, по которому все эти страницы будут преобразованы.
-На выходе полностью сохраняется структура исходного каталога. Файлы Markdown могут содержать данные Frontmatter[1].
+MdPugToHtml массово конвертирует файлы Markdown в HTML страницы с использованием шаблона Pug. Также, MdPugToHtml генерирует массив объектов, в котором для каждой созданной HTML страницы содержатся следующие данные:
 
-Потребность в MdPugToHtml возникла при создании сборщика [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), но плагин может использоваться независимо.
+- путь к файлу HTML страницы
+- заголовок HTML страницы
+- краткое описание HTML страницы
 
-[1] Markdown Frontmatter - это выделенный тремя дефисами `---` раздел в начале файла markdown, который имеет формат YAML/TOML. Вот пример frontmatter markdown в формате YAML:
+Этот массив объектов можно получить либо с помощью метода API, либо, если используется CLI, то в файле `link-list.pug`, который выглядит примерно так:
+
+```json
+- const points = [
+  {
+    "pathFile":"article1/index.html",
+    "title":"Заголовок первой статьи",
+    "description":"Краткое описание первой статьи"
+  },
+  {
+    "pathFile":"article2/index.html",
+    "title":"Заголовок второй статьи",
+    "description":"Краткое описание второй статьи"
+  },
+  ...
+]
+```
+
+В указанном каталоге MdPugToHtml обходит рекурсивно все подкаталоги и находит файлы Markdown, конвертируя их в страницы HTML в соответствии с указанным шаблоном Pug. Затем помещает отконвертированные страницы в указанный выходной каталог. В выходном каталоге полностью сохраняется структура исходного каталога.
+
+Файлы Markdown могут содержать данные Frontmatter. Frontmatter - это раздел в начале файла, выделенный с обеих сторон тремя дефисами `---`. Frontmatter может быть написан в любом из форматов YAML/TOML/JSON. Вот пример того, как в файле Markdown записывается Frontmatter в формате YAML:
 
 ```
 ---
 title: Краткий справочник по командам Git
-create: 2019-05-20
+create: 20-05-2019
 ---
 
 ## Полезные команды по работе с Git и Github
 ```
 
+Потребность в конверторе MdPugToHtml возникла при создании сборщика статических страниц [npm-for-frontend](https://github.com/injashkin/npm-for-frontend), но MdPugToHtml может использоваться независимо.
+
 <p align="right">(<a href="#readme-top">в начало</a>)</p>
 
 ### Используемые технологии
 
-- [![Node.js][nodejs.org]][nodejs-url]
-- [![Pug][pug.js]][pug-url]
 - [![gray-matter][gray-matter]][graymatter-url]
 - [![markdown-it][markdown-it]][markdownit-url]
+- [![Node.js][nodejs.org]][nodejs-url]
+- [![Pug][pug.js]][pug-url]
 
 <p align="right">(<a href="#readme-top">в начало</a>)</p>
 

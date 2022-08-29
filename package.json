@@ -15,7 +15,8 @@
     "markdown",
     "pug",
     "site",
-    "html"
+    "html",
+    "frontmatter"
   ],
   "author": {
     "name": "Igor Jashkin",
