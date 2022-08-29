@@ -27,7 +27,7 @@ Read in other languages: [Russian](README.ru.md)
 <h3 align="center">MdPugToHtml</h3>
 
   <p align="center">
-    Compiles HTML pages from Markdown files based on the Pug template.
+    Massively compiles HTML pages from Markdown files using a Pug template.
     <br />
     <a href="https://github.com/injashkin/md-pug-to-html"><strong>Explore the docs »</strong></a>
     <br />
@@ -171,11 +171,11 @@ npm run start
 
 As a result, a `docs` directory will be created, which will contain HTML pages converted from Markdown files.
 
-Also, two files will be created that may be useful to you:
+Also, two files will be created:
 
-- file `src/data/link-list.pug`, which will contain an array of objects. This array can be used to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
+- the file `src/data/link-list.pug` contains an array of objects. This array can be used to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
 
-- file `src/article/index.pug` with the Pug template, according to which all HTML pages are formatted. You can change the template and restart the `npm run start` command again. The articles will be reformatted according to the new template.
+- the file `src/article/index.pug` contains a Pug template. It is this template that uses the MdPugToHtml converter to create HTML pages. You can change the template and run the `npm run start` command again. The articles will be reformatted according to the new template.
 
 ### Advanced way
 
