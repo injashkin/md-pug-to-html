@@ -70,7 +70,7 @@ MdPugToHtml massively converts Markdown files to HTML pages using the Pug templa
 
 This array of objects can be obtained either using the API method, or, if the CLI is used, in the `link-list.pug` file, which looks something like this:
 
-```json
+```pug
 - const points = [
   {
     "pathFile":"article1/index.html",
@@ -86,14 +86,14 @@ This array of objects can be obtained either using the API method, or, if the CL
 ]
 ```
 
-In the specified directory, MdPugToHtml traverses recursively all subdirectories and finds Markdown files, converting them to HTML pages in accordance with the specified Pug template. Then places the converted pages in the specified output directory. The structure of the source directory is completely preserved in the output directory.
+MdPugToHtml in the specified directory traverses recursively all subdirectories and finds Markdown files, converting them to HTML pages in accordance with the specified Pug template. Then places the converted pages in the specified output directory. The structure of the source directory is completely preserved in the output directory.
 
 Markdown files may contain Frontmatter data. Frontmatter is a section at the beginning of the file, highlighted on both sides with three hyphens `---`. Frontmatter can be written in any of the YAML/TOML/JSON formats. Here is an example of how the Frontmatter is written in the YAML format in the Markdown file:
 
-```
+```YAML
 ---
 title: A quick guide to Git commands
-created: 2019-05-20
+create: 2019-05-20
 ---
 
 ## Useful commands for working with Git and Github

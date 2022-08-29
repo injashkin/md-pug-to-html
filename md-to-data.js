@@ -75,7 +75,7 @@ exports.listDir = function (
 
       if (status.isDirectory()) {
         const pathDirOfSrc = pathFOD;
-        this.listDir(sourceDir, pathDirOfSrc, destinationDir, templateDir); // рекурсия
+        this.listDir(sourceDir, pathDirOfSrc, destinationDir, templateDir); // recursion
       } else {
         const pathFileOfSrc = pathFOD;
         const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
@@ -116,8 +116,8 @@ exports.listDir = function (
             htmlFromPug
           );
         } else {
-          // Если файл не с расширением .md, то он просто копируется
-          // в каталог статьи
+          // If the file is not with the extension .md, then it is simply copied
+          // to the article catalog
           const pathDestFile = pathFOD.replace(sourceDir, destinationDir);
           fs.copyFileSync(pathFileOfSrc, pathDestFile);
         }
