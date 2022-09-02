@@ -18,6 +18,8 @@ html(lang= 'ru')
     meta(charset= 'utf-8')
     meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
     meta(name= 'description' content= description)
+    link(rel='stylesheet' href='/index.css')
+    script(defer src='/index.js')
     title= title
 
   body
@@ -155,7 +157,7 @@ exports.addItemToLinkList = function (fileData, dirUrl) {
   const { data } = fileData;
 
   const obj = {
-    pathFile: `${dirUrl}${path.sep}index.html`,
+    pathFile: `${dirUrl}${path.sep}`,
     title: data.title,
     description: data.description,
   };
