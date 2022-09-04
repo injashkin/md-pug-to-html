@@ -130,12 +130,9 @@ exports.listDir = function (
   }
 };
 
-exports.separateMd = function (srcDir, destDir, templDir, dOutDir) {
-  const sourceDir = srcDir;
+exports.separateMd = function (opt) {
+  const { sourceDir, use, destinationDir, templateDir, dataOutDir } = opt;
   const sourceDir2 = sourceDir;
-  const destinationDir = destDir;
-  const templateDir = templDir;
-  const dataOutDir = dOutDir;
 
   if (!fs.existsSync(`${templateDir}${path.sep}index.pug`)) {
     mdToPug.mkDir(templateDir);
@@ -165,13 +162,14 @@ exports.addItemToLinkList = function (fileData, dirUrl) {
   this.linkList.push(obj);
 };
 
-exports.init = function ({
-  sourceDir,
-  destinationDir = 'docs',
-  templateDir = 'src/article',
-  dataOutDir = 'src/data',
-}) {
-  this.separateMd(sourceDir, destinationDir, templateDir, dataOutDir);
+exports.init = function (opt) {
+  const {
+    sourceDir,
+    destinationDir = 'docs',
+    templateDir = 'src/article',
+    dataOutDir = 'src/data',
+  } = opt;
+  this.separateMd(sourceDir, use, destinationDir, templateDir, dataOutDir);
 };
 
 exports.getList = function () {

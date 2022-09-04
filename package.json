@@ -1,7 +1,7 @@
 {
   "name": "md-pug-to-html",
-  "version": "1.2.9",
-  "description": "Компилирует HTML страницы из файлов Markdown с учетом Pug шаблона.",
+  "version": "2.0.0",
+  "description": "Massively compiles HTML pages from Markdown files using a Pug template",
   "main": "md-to-data.js",
   "bin": {
     "md-pug-to-html": "./bin.js"
@@ -25,10 +25,10 @@
   },
   "license": "MIT",
   "dependencies": {
+    "commander": "^9.4.0",
     "gray-matter": "^4.0.3",
     "markdown-it": "^13.0.1",
     "pug": "^3.0.2",
     "pug-cli": "^1.0.0-alpha6"
-  },
-  "devDependencies": {}
+  }
 }

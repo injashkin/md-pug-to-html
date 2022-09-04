@@ -1,30 +1,28 @@
 #!/usr/bin/env node
 
 const mdToData = require('./md-to-data');
+const program = require('commander');
 
-const args = {};
-let sourceDir, destinationDir, templateDir, dataOutDir;
+const obj = {};
 
-process.argv.slice(2).forEach((option) => {
-  var values = option.split('=');
-  var key = values.shift();
-  args[key] = (args[key] || []).concat(values);
-});
+program
+  .name('md-pug-to-html')
+  .description(
+    'Massively compiles HTML pages from Markdown files using a Pug template'
+  )
+  .version('2.0.0')
+  .argument('<dir>', 'the directory from which to get the .md files')
+  .option('-n, --no-use', "don't use the article template")
+  .option('-o, --out [dir]', 'project build directory', 'mpth')
+  .option('-t, --template [dir]', 'catalog of the article template', 'mpth')
+  .option('-d, --data [dir]', 'the output directory of the data file', 'mpth')
+  .action((dir, options) => {
+    obj.sourceDir = dir;
+    obj.use = options.use;
+    obj.destinationDir = options.out;
+    obj.templateDir = options.template;
+    obj.dataOutDir = options.data;
+  });
 
-if (args['-i']) {
-  sourceDir = `${args['-i']}`; // the directory from which to get the .md files
-} else console.log('ERROR: The source directory is not specified');
-
-if (args['-o']) {
-  destinationDir = `${args['-o']}`; // project build directory
-} else destinationDir = 'docs';
-
-if (args['-t']) {
-  templateDir = `${args['-t']}`; // catalog of the article template
-} else templateDir = 'src/article';
-
-if (args['-d']) {
-  dataOutDir = `${args['-d']}`; // the output directory of the data file
-} else dataOutDir = 'src/data';
-
-mdToData.separateMd(sourceDir, destinationDir, templateDir, dataOutDir);
+program.parse();
+mdToData.separateMd(obj);
