@@ -27,7 +27,7 @@ Read in other languages: [Russian](README.ru.md)
 <h3 align="center">MdPugToHtml</h3>
 
   <p align="center">
-    Massively compiles HTML pages from Markdown files using a Pug template.
+    Massively converts Markdown files to HTML with the ability to apply Pug templates
     <br />
     <a href="https://github.com/injashkin/md-pug-to-html"><strong>Explore the docs »</strong></a>
     <br />
@@ -62,31 +62,34 @@ Read in other languages: [Russian](README.ru.md)
 
 ## About The Project
 
-MdPugToHtml massively converts Markdown files to HTML pages using the Pug template. Also, MdPugToHtml generates an array of objects, which contains the following data for each created HTML page:
+MdPugToHtml massively converts Markdown files to HTML. You can specify a Pug template by which all Markdown pages will be converted to HTML. Also, MdPugToHtml generates an array of objects, which contains the following data for each created HTML page:
 
 - path to the HTML page file
 - HTML page title
 - a brief description of the HTML page
+- any other data that the user specifies in the Frontmatter section of the Markdown article.
 
-This array of objects can be obtained either using the API method, or, if the CLI is used, in the `link-list.pug` file, which looks something like this:
+This array of objects can be obtained either using the API's `getDataList()` method, or, if the CLI is used, in the `mpth-data.pug` file, which looks something like this:
 
 ```pug
-- const points = [
+- const dataListItems = [
   {
     "pathFile":"article1/index.html",
     "title":"Title of the first article",
-    "description":"Brief description of the first article"
+    "description":"Brief description of the first article",
+    "date":"2022-08-09"
   },
   {
     "pathFile":"article2/index.html",
     "title":"Title of the second article",
-    "description":"Brief description of the second article"
+    "description":"Brief description of the second article",
+    "date":"2019-12-19"
   },
   ...
 ]
 ```
 
-MdPugToHtml in the specified directory traverses recursively all subdirectories and finds Markdown files, converting them to HTML pages in accordance with the specified Pug template. Then places the converted pages in the specified output directory. The structure of the source directory is completely preserved in the output directory.
+MdPugToHtml recursively traverses all subdirectories in the specified directory, finds Markdown files and converts them to HTML pages. At the same time, the Pug template can be used, according to which the pages will be transformed. The converted pages are then placed in the specified output directory. The structure of the source directory is completely preserved in the output directory.
 
 Markdown files may contain Frontmatter data. Frontmatter is a section at the beginning of the file, highlighted on both sides with three hyphens `---`. Frontmatter can be written in any of the YAML/TOML/JSON formats. Here is an example of how the Frontmatter is written in the YAML format in the Markdown file:
 
@@ -126,7 +129,7 @@ npm i -D md-pug-to-html
 
 ### The easy way
 
-This method allows you to convert these files into HTML pages by specifying just a directory with Markdown files. And, additionally, get a file with a list of converted files, as well as a Pug template file, on the basis of which all Markdown files were converted to HTML files.
+This method allows you to easily convert the entire directory with Markdown files into HTML pages. And, additionally, get an HTML file with a list of links to these pages.
 
 Open a terminal, create a directory, for example, `my-site`, and navigate to it:
 
@@ -147,37 +150,59 @@ Install MdPugToHtml:
 npm i -D md-pug-to-html
 ```
 
-In the `package.json` file, use the `-i` key to specify the directory where the Markdown files are located:
+In the `package.json` file, configure MdPugToHtml:
 
 ```json
 "scripts": {
-  "start": "md-pug-to-html -i=content",
+  "start": "md-pug-to-html content",
 }
 ```
 
-The `content` directory is specified here. This means that it must be located in the same directory as the `package.json` file. If the Markdown files are located in a different location, specify a different path, for example:
+Where `content' is the directory where the Markdown files are located. This means that the directory is located at the root of this project.
+
+If the Markdown files are located in a different location, specify a different path, for example:
 
 ```json
 "scripts": {
-  "start": "md-pug-to-html -i=/home/my/articles",
+  "start": "md-pug-to-html /home/my/articles",
 }
 ```
 
-From the `my-site` directory in the terminal, run the command:
+Now run MdPugToHtml. To do this, run the command from the `my-site` directory in the terminal:
 
 ```
 npm run start
 ```
 
-As a result, a `docs` directory will be created, which will contain HTML pages converted from Markdown files.
+As a result, the `mpth` directory will be created, which will contain HTML pages converted from Markdown files.
 
-Also, two files will be created:
+Also, three files will be created:
 
-- the file `src/data/link-list.pug` contains an array of objects. This array can be used to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
+- `mpth/index.html`, which contains a list of links to the created Html files. If you open this file in a browser, you can view the created pages from the browser by clicking on the links.
 
-- the file `src/article/index.pug` contains a Pug template. It is this template that uses the MdPugToHtml converter to create HTML pages. You can change the template and run the `npm run start` command again. The articles will be reformatted according to the new template.
+- `mpth/mpth-data.pug`, which contains an array of objects. This array can be used to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
+
+- `mpth/mpth-template.pug`, which contains the Pu template. It is this template that uses the MdPugToHtml converter to create HTML pages, if template conversion is allowed. You can change the template and run the `npm run start` command again. The articles will be reformatted according to the new template.
 
 ### Advanced way
+
+```
+Usage: md-pug-to-html [options] <dir>
+
+Massively compiles HTML pages from Markdown files using a Pug template
+
+Arguments:
+  dir                   the directory from which to get the .md files
+
+Options:
+  -V, --version         output the version number
+  -n, --no-use          don't use the article template
+  -o, --out [dir]       project build directory (default: "mpth")
+  -t, --template [dir]  catalog of the article template (default: "mpth")
+  -d, --data [dir]      the output directory of the data file (default: "mpth")
+  -h, --help            display help for command
+
+```
 
 Open a terminal, create a directory, for example, `my-site`, and navigate to it:
 
@@ -224,41 +249,43 @@ create: 2022-08-11
 ## Title h2 in the second article
 ```
 
-Now, in the root directory of the project, create the `src` directory, and in it the `article` directory, where you create the `index.pug` file with the following content:
+Now, in the root directory of the project, create the `src` directory, and in it the `article` directory, where you can create the `mpth-template.pug` file with its own template. Or if you skip this step, MdPugToHtml will create this file with the following contents:
 
 ```pug
 block variables
 
 doctype html
-html(lang= 'en')
+html(lang= 'ru')
   head
     meta(charset= 'utf-8')
     meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
-    meta(name= 'description' content= description)
-    title= title
+    meta(name= 'description' content= data.description)
+    link(rel='stylesheet' href='/index.css')
+    script(defer src='/index.js')
+    title= data.title
 
   body
     block main
       .content
         .article
-          .creationDate= `Created: ${create}`
-          include from-md.html
+          .creationDate= `Created: ${data.date}`
+          != contentHtml
 ```
 
 In the `package.json` file, configure MdPugToHtml with the necessary parameters:
 
 ```json
 "scripts": {
-  "start": "md-pug-to-html -i=content -t=src/article",
+  "start": "md-pug-to-html content -o dist -t src/article -d src/data",
 }
 ```
 
 Parameter values are set using keys:
 
 - key `-i` - path to the directory where the markdown files are located (required)
-- key `-o` - path to the project's build directory (default `docs`)
-- key `-t` - path to the directory of the article template named `index.pug` (by default `src/article`)
-- key `-d` - path to the directory where the `linkList.pug` file will be generated (default `src/data`)
+- key `-o` - path to the project's build directory (default `mpth`)
+- key `-t` - path to the directory of the article template named `index.pug` (by default `mpth`)
+- key `-d` - path to the directory where the `linkList.pug` file will be generated (default `mpth`)
 
 From the root directory of the project in the terminal, run the command:
 
@@ -268,11 +295,11 @@ npm run start
 
 As a result, MdPugToHtml will do the following:
 
-- creates the `docs` directory (if it was missing)
+- creates the `dist` directory (if it was missing)
 
 - recursively traverses the subdirectories `article1` and `article2` in the `content` directory and finds files in them `index.md `.
 
-- converts files `index.md ` to pages `index.html ` in accordance with the template `src/article/index.pug` and will place these pages in the `docs` directory while preserving the entire structure of the subdirectories of the `content` directory, i.e. the `article1` and `article2` subdirectories will be created in the `docs` directory.
+- converts files `index.md ` to pages `index.html ` in accordance with the template `src/article/mpth-template.pug` and will place these pages in the `dist` directory while preserving the entire structure of the subdirectories of the `content` directory, i.e. the `article1` and `article2` subdirectories will be created in the `dist` directory.
 
 To file `docs/article1/index.html` the following will be compiled:
 
@@ -321,19 +348,21 @@ To file `docs/article2/index.html` the following will be compiled:
 </html>
 ```
 
-- MdPugToHtml will generate a file `src/data/linkList.pug`, which will contain an array of objects called `points`. Each array object has properties:
+- MdPugToHtml will generate a file `src/data/mpth-data.pug`, which will contain an array of objects called `dataListItems`. Each array object has properties:
   - `pathFile` - path to the file `index.html`
   - `title` - article title
   - `description` - brief description of the article
+  - `date` - date of creation of the article
+  - may contain any other data
 
-The file `src/data/linkList.pug` can be used to create a list of links to articles in blog format. Below is an example of how this can be used.
+The file `src/data/mpth-data.pug` can be used to create a list of links to articles in blog format. Below is an example of how this can be used.
 
 Create a page template where a list of articles will be displayed. To do this, create a file `list.pug` in the `src` directory, and copy the following into it:
 
 ```pug
 block variables
 
-  include ./data/link-list.pug
+  include ./data/mpth-data.pug
 
 doctype html
 html(lang= 'en')
@@ -345,18 +374,18 @@ block main
   .content
     .creationDate= pageCreated
     ul.list__box
-      each point in points
+      each item in dataListItems
         li
-          a.list__item(href=point.pathFile)= point.title
-          p= point.description
+          a.list__item(href=item.pathFile)= item.title
+          p= item.description
 ```
 
 In `package.json` file, add a line marked with a `+`:
 
 ```json
 "scripts": {
-  "start": "md-pug-to-html -i=content -t=src/pages/article",
-+ "pug": "pug --pretty src/list.pug -o docs",
+  "start": "md-pug-to-html content -o dist -t src/article -d src/data",
++ "pug": "pug --pretty src/list.pug -o dist",
 }
 ```
 
@@ -418,16 +447,12 @@ In `options` you can specify:
 
 - `sourceDir` - directory with Markdown articles (required)
 - `templateDir` - directory with a template for article pages (by default, it will be generated)
-- `destinationDir` - usually, this is the project's build directory (by default `destinationDir: 'docs'`)
-- `dataOutDir` - the directory where the `link-list.pug` file will be stored (by default `dataOutDir: 'src/data',`)
+- `destinationDir` - usually, this is the project's build directory (by default `destinationDir: 'mpth'`)
+- `dataOutDir` - the directory where the `mpth-data.pug` file will be stored (by default `dataOutDir: 'mpth',`)
 
-`init()` results in the creation of all files specified in [Using CLI](#using-CLI).
+`init()` starts the MdPugToHtml converter and creates all the files specified in the paragraph [Using CLI](#using-CLI).
 
-`getList()` returns a list of created pages in the form of an array of objects, each object of which contains:
-
-- `pathFile` - the path to the article page file `index.html `
-- `title` - article title
-- `description` - brief description of the article
+`getDataList()` returns an array of `dataListItems`
 
 For more information, see [Using CLI](#using-CLI).
 

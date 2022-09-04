@@ -30,7 +30,7 @@ const options = {
   pretty: true,
 };
 
-const linkList = [];
+const dataList = [];
 
 function writeFile(path, content) {
   try {
@@ -116,7 +116,7 @@ function listDir(sourceDir, use, sourceDir2, destinationDir, templateDir) {
 
 function addItemToLinkList(fileData, dirUrl) {
   fileData.data.pathFile = `${dirUrl}${path.sep}`;
-  linkList.push(fileData.data);
+  dataList.push(fileData.data);
 }
 
 exports.init = function (opt) {
@@ -142,10 +142,10 @@ exports.init = function (opt) {
 
   writeFile(
     `${dataOutDir}${path.sep}mpth-data.pug`,
-    `- const points = ${JSON.stringify(linkList)}`
+    `- const dataListItems = ${JSON.stringify(dataList)}`
   );
 };
 
-exports.getList = function () {
-  return linkList;
+exports.getDataList = function () {
+  return dataList;
 };
