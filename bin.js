@@ -25,4 +25,4 @@ program
   });
 
 program.parse();
-mdToData.separateMd(obj);
+mdToData.init(obj);

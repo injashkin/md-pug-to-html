@@ -27,7 +27,7 @@ html(lang= 'ru')
       .content
         .article
           .creationDate= \`Created: \${create}\`
-          include from-md.html`;
+          include mpth-tmp.html`;
 
 const options = {
   pretty: true,
@@ -62,6 +62,7 @@ function getRelativeUrl(dirUrl) {
 
 exports.listDir = function (
   sourceDir,
+  use,
   sourceDir2,
   destinationDir,
   templateDir
@@ -77,7 +78,7 @@ exports.listDir = function (
 
       if (status.isDirectory()) {
         const pathDirOfSrc = pathFOD;
-        this.listDir(sourceDir, pathDirOfSrc, destinationDir, templateDir); // recursion
+        this.listDir(sourceDir, use, pathDirOfSrc, destinationDir, templateDir); // recursion
       } else {
         const pathFileOfSrc = pathFOD;
         const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
@@ -103,15 +104,17 @@ exports.listDir = function (
 
           mdToPug.mkDir(templateDir);
           mdToPug.writeFile(
-            `${templateDir}${path.sep}from-md.html`,
+            `${templateDir}${path.sep}mpth-tmp.html`,
             htmlFromMd
           );
 
-          const htmlFromPug = compileHtml(
-            `${templateDir}${path.sep}index.pug`,
-            fileData.data,
-            options
-          );
+          const htmlFromPug = use
+            ? compileHtml(
+                `${templateDir}${path.sep}mpth-template.pug`,
+                fileData.data,
+                options
+              )
+            : htmlFromMd;
 
           mdToPug.writeFile(
             `${pathDestFileObj.dir}${path.sep}index.html`,
@@ -130,26 +133,6 @@ exports.listDir = function (
   }
 };
 
-exports.separateMd = function (opt) {
-  const { sourceDir, use, destinationDir, templateDir, dataOutDir } = opt;
-  const sourceDir2 = sourceDir;
-
-  if (!fs.existsSync(`${templateDir}${path.sep}index.pug`)) {
-    mdToPug.mkDir(templateDir);
-
-    mdToPug.writeFile(`${templateDir}${path.sep}index.pug`, templatePug);
-  }
-
-  mdToPug.mkDir(dataOutDir);
-
-  this.listDir(sourceDir, sourceDir2, destinationDir, templateDir);
-
-  mdToPug.writeFile(
-    `${dataOutDir}${path.sep}link-list.pug`,
-    `- const points = ${JSON.stringify(this.linkList)}`
-  );
-};
-
 exports.addItemToLinkList = function (fileData, dirUrl) {
   const { data } = fileData;
 
@@ -165,11 +148,31 @@ exports.addItemToLinkList = function (fileData, dirUrl) {
 exports.init = function (opt) {
   const {
     sourceDir,
-    destinationDir = 'docs',
-    templateDir = 'src/article',
-    dataOutDir = 'src/data',
+    use = true,
+    destinationDir = 'mpth',
+    templateDir = 'mpth',
+    dataOutDir = 'mpth',
   } = opt;
-  this.separateMd(sourceDir, use, destinationDir, templateDir, dataOutDir);
+
+  const sourceDir2 = sourceDir;
+
+  if (!fs.existsSync(`${templateDir}${path.sep}mpth-template.pug`)) {
+    mdToPug.mkDir(templateDir);
+
+    mdToPug.writeFile(
+      `${templateDir}${path.sep}mpth-template.pug`,
+      templatePug
+    );
+  }
+
+  mdToPug.mkDir(dataOutDir);
+
+  this.listDir(sourceDir, use, sourceDir2, destinationDir, templateDir);
+
+  mdToPug.writeFile(
+    `${dataOutDir}${path.sep}mpth-data.pug`,
+    `- const points = ${JSON.stringify(this.linkList)}`
+  );
 };
 
 exports.getList = function () {
