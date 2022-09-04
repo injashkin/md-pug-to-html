@@ -3,12 +3,9 @@
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
-const MarkdownIt = require('markdown-it'),
-  md = new MarkdownIt();
-
 const pug = require('pug');
-
-const mdToPug = require('./md-to-pug');
+const MarkdownIt = require('markdown-it');
+const md = new MarkdownIt();
 
 const templatePug = `block variables
 
@@ -33,7 +30,25 @@ const options = {
   pretty: true,
 };
 
-exports.linkList = [];
+const linkList = [];
+
+function writeFile(path, content) {
+  try {
+    fs.writeFileSync(path, content);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function mkDir(dir) {
+  try {
+    if (!fs.existsSync(dir)) {
+      return fs.mkdirSync(dir, { recursive: true });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 function compileHtml(templateFile, data, options) {
   const compiledFunction = pug.compileFile(templateFile, options);
@@ -50,13 +65,7 @@ function splitFileContents(pathFileOfSrc) {
   return obj;
 }
 
-exports.listDir = function (
-  sourceDir,
-  use,
-  sourceDir2,
-  destinationDir,
-  templateDir
-) {
+function listDir(sourceDir, use, sourceDir2, destinationDir, templateDir) {
   try {
     const filesAndDirs = fs.readdirSync(sourceDir2);
 
@@ -68,7 +77,7 @@ exports.listDir = function (
 
       if (status.isDirectory()) {
         const pathDirOfSrc = pathFOD;
-        this.listDir(sourceDir, use, pathDirOfSrc, destinationDir, templateDir); // recursion
+        listDir(sourceDir, use, pathDirOfSrc, destinationDir, templateDir); // recursion
       } else {
         const pathFileOfSrc = pathFOD;
         const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
@@ -76,11 +85,11 @@ exports.listDir = function (
         const dirOut = path.parse(pathDestFile).dir;
         const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
 
-        mdToPug.mkDir(dirOut);
+        mkDir(dirOut);
 
         if (path.extname(pathFileOfSrc) === '.md') {
           const fileData = splitFileContents(pathFileOfSrc);
-          this.addItemToLinkList(fileData, dirUrl);
+          addItemToLinkList(fileData, dirUrl);
           fileData.contentHtml = md.render(fileData.contentMd);
 
           const htmlFromPug = use
@@ -91,10 +100,7 @@ exports.listDir = function (
               )
             : fileData.contentHtml;
 
-          mdToPug.writeFile(
-            `${pathDestFileObj.dir}${path.sep}index.html`,
-            htmlFromPug
-          );
+          writeFile(`${pathDestFileObj.dir}${path.sep}index.html`, htmlFromPug);
         } else {
           // If the file is not with the extension .md, then it is simply copied
           // to the article catalog
@@ -106,12 +112,12 @@ exports.listDir = function (
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-exports.addItemToLinkList = function (fileData, dirUrl) {
+function addItemToLinkList(fileData, dirUrl) {
   fileData.data.pathFile = `${dirUrl}${path.sep}`;
-  this.linkList.push(fileData.data);
-};
+  linkList.push(fileData.data);
+}
 
 exports.init = function (opt) {
   const {
@@ -125,24 +131,21 @@ exports.init = function (opt) {
   const sourceDir2 = sourceDir;
 
   if (!fs.existsSync(`${templateDir}${path.sep}mpth-template.pug`)) {
-    mdToPug.mkDir(templateDir);
+    mkDir(templateDir);
 
-    mdToPug.writeFile(
-      `${templateDir}${path.sep}mpth-template.pug`,
-      templatePug
-    );
+    writeFile(`${templateDir}${path.sep}mpth-template.pug`, templatePug);
   }
 
-  mdToPug.mkDir(dataOutDir);
+  mkDir(dataOutDir);
 
-  this.listDir(sourceDir, use, sourceDir2, destinationDir, templateDir);
+  listDir(sourceDir, use, sourceDir2, destinationDir, templateDir);
 
-  mdToPug.writeFile(
+  writeFile(
     `${dataOutDir}${path.sep}mpth-data.pug`,
-    `- const points = ${JSON.stringify(this.linkList)}`
+    `- const points = ${JSON.stringify(linkList)}`
   );
 };
 
 exports.getList = function () {
-  return this.linkList;
+  return linkList;
 };
