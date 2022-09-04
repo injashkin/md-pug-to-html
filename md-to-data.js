@@ -17,17 +17,17 @@ html(lang= 'ru')
   head
     meta(charset= 'utf-8')
     meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
-    meta(name= 'description' content= description)
+    meta(name= 'description' content= data.description)
     link(rel='stylesheet' href='/index.css')
     script(defer src='/index.js')
-    title= title
+    title= data.title
 
   body
     block main
       .content
         .article
-          .creationDate= \`Created: \${create}\`
-          include mpth-tmp.html`;
+          .creationDate= \`Created: \${data.date}\`
+          != contentHtml`;
 
 const options = {
   pretty: true,
@@ -40,24 +40,14 @@ function compileHtml(templateFile, data, options) {
   return compiledFunction(data);
 }
 
-function splitFileContents(pathFileOfSrc, relativeUrlCss, relativeUrlJs) {
+function splitFileContents(pathFileOfSrc) {
   const obj = {};
   const contentMixed = fs.readFileSync(pathFileOfSrc);
 
-  obj.content = matter(contentMixed).content;
+  obj.contentMd = matter(contentMixed).content;
+  obj.contentHtml = '';
   obj.data = matter(contentMixed).data;
-  obj.data.stylesheetHref = relativeUrlCss;
-  obj.data.scriptSrc = relativeUrlJs;
   return obj;
-}
-
-function getRelativeUrl(dirUrl) {
-  const num = dirUrl.split(path.sep).length;
-  let str = '';
-  for (let i = 0; i < num; i++) {
-    str = str + '../';
-  }
-  return str;
 }
 
 exports.listDir = function (
@@ -89,32 +79,17 @@ exports.listDir = function (
         mdToPug.mkDir(dirOut);
 
         if (path.extname(pathFileOfSrc) === '.md') {
-          const relativeUrlCss = getRelativeUrl(dirUrl) + 'index.css';
-          const relativeUrlJs = getRelativeUrl(dirUrl) + 'index.js';
-
-          const fileData = splitFileContents(
-            pathFileOfSrc,
-            relativeUrlCss,
-            relativeUrlJs
-          );
-
+          const fileData = splitFileContents(pathFileOfSrc);
           this.addItemToLinkList(fileData, dirUrl);
-
-          const htmlFromMd = md.render(fileData.content);
-
-          mdToPug.mkDir(templateDir);
-          mdToPug.writeFile(
-            `${templateDir}${path.sep}mpth-tmp.html`,
-            htmlFromMd
-          );
+          fileData.contentHtml = md.render(fileData.contentMd);
 
           const htmlFromPug = use
             ? compileHtml(
                 `${templateDir}${path.sep}mpth-template.pug`,
-                fileData.data,
+                fileData,
                 options
               )
-            : htmlFromMd;
+            : fileData.contentHtml;
 
           mdToPug.writeFile(
             `${pathDestFileObj.dir}${path.sep}index.html`,
@@ -134,15 +109,8 @@ exports.listDir = function (
 };
 
 exports.addItemToLinkList = function (fileData, dirUrl) {
-  const { data } = fileData;
-
-  const obj = {
-    pathFile: `${dirUrl}${path.sep}`,
-    title: data.title,
-    description: data.description,
-  };
-
-  this.linkList.push(obj);
+  fileData.data.pathFile = `${dirUrl}${path.sep}`;
+  this.linkList.push(fileData.data);
 };
 
 exports.init = function (opt) {
