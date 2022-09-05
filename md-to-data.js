@@ -152,7 +152,8 @@ exports.init = function (opt) {
 
   const func = pug.compile(templatePug2, options);
   const listOfArticles = func({ items: this.getDataList() });
-  writeFile(`${dataOutDir}${path.sep}index.html`, listOfArticles);
+  console.log(destinationDir);
+  writeFile(`${destinationDir}${path.sep}index.html`, listOfArticles);
 };
 
 exports.getDataList = function () {
