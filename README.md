@@ -67,7 +67,7 @@ MdPugToHtml massively converts Markdown files to HTML. You can specify a Pug tem
 - path to the HTML page file
 - HTML page title
 - a brief description of the HTML page
-- any other data that the user specifies in the Frontmatter section of the Markdown article.
+- any other data that the user wishes to indicate in their Markdown articles in the Frontmatter section.
 
 This array of objects can be obtained either using the API's `getDataList()` method, or, if the CLI is used, in the `mpth-data.pug` file, which looks something like this:
 
@@ -129,7 +129,7 @@ npm i -D md-pug-to-html
 
 ### The easy way
 
-This method allows you to easily convert the entire directory with Markdown files into HTML pages. And, additionally, get an HTML file with a list of links to these pages.
+This method allows you to easily convert the entire directory with Markdown files into HTML files. And, additionally, get an HTML file with a list of links to HTML files.
 
 Open a terminal, create a directory, for example, `my-site`, and navigate to it:
 
@@ -154,19 +154,11 @@ In the `package.json` file, configure MdPugToHtml:
 
 ```json
 "scripts": {
-  "start": "md-pug-to-html content",
+  "start": "md-pug-to-html /home/my/content",
 }
 ```
 
-Where `content' is the directory where the Markdown files are located. This means that the directory is located at the root of this project.
-
-If the Markdown files are located in a different location, specify a different path, for example:
-
-```json
-"scripts": {
-  "start": "md-pug-to-html /home/my/articles",
-}
-```
+Where `/home/my/content` is the path to the directory where the Markdown files are located.
 
 Now run MdPugToHtml. To do this, run the command from the `my-site` directory in the terminal:
 
@@ -174,17 +166,19 @@ Now run MdPugToHtml. To do this, run the command from the `my-site` directory in
 npm run start
 ```
 
-As a result, the `mpth` directory will be created, which will contain HTML pages converted from Markdown files.
+As a result, the `mpth` directory will be created, in which you will find HTML pages converted from Markdown files.
 
 Also, three files will be created:
 
 - `mpth/index.html`, which contains a list of links to the created Html files. If you open this file in a browser, you can view the created pages from the browser by clicking on the links.
 
-- `mpth/mpth-data.pug`, which contains an array of objects. This array can be used to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
+- `mpth/mpth-data.pug`, which contains an array of objects. This array can be used, for example, to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
 
 - `mpth/mpth-template.pug`, which contains the Pu template. It is this template that uses the MdPugToHtml converter to create HTML pages, if template conversion is allowed. You can change the template and run the `npm run start` command again. The articles will be reformatted according to the new template.
 
 ### Advanced way
+
+Below is the information for MdPugToHtml CLI
 
 ```
 Usage: md-pug-to-html [options] <dir>
@@ -204,7 +198,7 @@ Options:
 
 ```
 
-Open a terminal, create a directory, for example, `my-site`, and navigate to it:
+Below is an example of how you can use MdPugToHtml CLI with custom options. Open a terminal, create a directory, for example, `my-site`, and navigate to it:
 
 ```
 mkdir my-site
@@ -272,7 +266,7 @@ html(lang= 'ru')
           != contentHtml
 ```
 
-In the `package.json` file, configure MdPugToHtml with the necessary parameters:
+In the `package.json` file, configure MdPugToHtml with the necessary options:
 
 ```json
 "scripts": {
@@ -280,12 +274,12 @@ In the `package.json` file, configure MdPugToHtml with the necessary parameters:
 }
 ```
 
-Parameter values are set using keys:
+where :
 
-- key `-i` - path to the directory where the markdown files are located (required)
-- key `-o` - path to the project's build directory (default `mpth`)
-- key `-t` - path to the directory of the article template named `index.pug` (by default `mpth`)
-- key `-d` - path to the directory where the `linkList.pug` file will be generated (default `mpth`)
+- `content` - path to the directory where the markdown files are located
+- option `-o` sets the path to the `dist` directory where the finished project build will be
+- option `-t` sets the path to the directory `src/article`, which will have a Pug template named `mpth-template.pug`
+- option `-d` sets the path to the directory `src/data`, where the file `mpth-data.pug` will be generated
 
 From the root directory of the project in the terminal, run the command:
 
@@ -349,7 +343,7 @@ To file `docs/article2/index.html` the following will be compiled:
 ```
 
 - MdPugToHtml will generate a file `src/data/mpth-data.pug`, which will contain an array of objects called `dataListItems`. Each array object has properties:
-  - `pathFile` - path to the file `index.html`
+  - `pathFile` - path to the file `index.html` articles
   - `title` - article title
   - `description` - brief description of the article
   - `date` - date of creation of the article
@@ -389,13 +383,19 @@ In `package.json` file, add a line marked with a `+`:
 }
 ```
 
-From the root directory of the project in the terminal, run the following command:
+Install `pug-cli`, to do this, run the following command from the root directory of the project in the terminal:
+
+```
+npm i -D pug-cle
+```
+
+After installation, run `pug-cli`:
 
 ```
 npm run pug
 ```
 
-A file will be created `docs/list.html ` the following content:
+A file will be created `dist/list.html ` the following content:
 
 ```html
 <!DOCTYPE html>
@@ -409,11 +409,11 @@ A file will be created `docs/list.html ` the following content:
   <div class="creationDate"></div>
   <ul class="list__box">
     <li>
-      <a class="list__item" href="article1/index.html">Article one</a>
+      <a class="list__item" href="article1/">Article one</a>
       <p>Brief description of the first article</p>
     </li>
     <li>
-      <a class="list__item" href="article2/index.html">Article two</a>
+      <a class="list__item" href="article2/">Article two</a>
       <p>Brief description of the second article</p>
     </li>
   </ul>
