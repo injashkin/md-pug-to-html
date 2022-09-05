@@ -190,7 +190,8 @@ Arguments:
 
 Options:
   -V, --version         output the version number
-  -n, --no-use          don't use the article template
+  -n, --no-use          do not use the article template
+  -I, --no-index        do not generate an index.html file
   -o, --out [dir]       project build directory (default: "mpth")
   -t, --template [dir]  catalog of the article template (default: "mpth")
   -d, --data [dir]      the output directory of the data file (default: "mpth")

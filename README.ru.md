@@ -181,21 +181,21 @@ npm run start
 Ниже приведена информация для MdPugToHtml CLI
 
 ```
-Usage: md-pug-to-html [options] <dir>
+Использование: md-pug-to-html [options] <dir>
 
-Massively compiles HTML pages from Markdown files using a Pug template
+Массово компилирует HTML-страницы из файлов Markdown с использованием шаблона Pug
 
-Arguments:
-  dir                   the directory from which to get the .md files
+Аргументы:
+  dir                   каталог, из которого нужно получить файлы .md
 
-Options:
-  -V, --version         output the version number
-  -n, --no-use          don't use the article template
-  -o, --out [dir]       project build directory (default: "mpth")
-  -t, --template [dir]  catalog of the article template (default: "mpth")
-  -d, --data [dir]      the output directory of the data file (default: "mpth")
-  -h, --help            display help for command
-
+Опции:
+  -V, --version         выводит номер версии
+  -n, --no-use          не использовать шаблон статьи
+  -I, --no-index        не создавать файл index.html
+  -o, --out [dir]       каталог сборки проекта (по умолчанию: "mpth")
+  -t, --template [dir]  каталог шаблона статьи (по умолчанию: "mpth")
+  -d, --data [dir]      каталог для файла данных (по умолчанию: "mpth")
+  -h, --help            отображает эту справку
 ```
 
 Ниже приведен пример, как можно использовать MdPugToHtml CLI с настраиваемыми опциями. Откройте терминал, создайте каталог, например, `my-site`, и перейдите в него:
