@@ -119,10 +119,22 @@ function addItemToLinkList(fileData, dirUrl) {
   dataList.push(fileData.data);
 }
 
+function generateIndexFile(dir) {
+  const templatePug = `ul   
+  each item in items
+    li
+      a(href=\`\${item.pathFile}index.html\`)= item.title`;
+
+  const func = pug.compile(templatePug, options);
+  const listOfArticles = func({ items: this.getDataList() });
+  writeFile(`${dir}${path.sep}index.html`, listOfArticles);
+}
+
 exports.init = function (opt) {
   const {
     sourceDir,
     use = true,
+    index = true,
     destinationDir = 'mpth',
     templateDir = 'mpth',
     dataOutDir = 'mpth',
@@ -145,15 +157,9 @@ exports.init = function (opt) {
     `- const dataListItems = ${JSON.stringify(dataList)}`
   );
 
-  const templatePug2 = `ul   
-  each item in items
-    li
-      a(href=\`\${item.pathFile}index.html\`)= item.title`;
-
-  const func = pug.compile(templatePug2, options);
-  const listOfArticles = func({ items: this.getDataList() });
-  console.log(destinationDir);
-  writeFile(`${destinationDir}${path.sep}index.html`, listOfArticles);
+  if (index) {
+    generateIndexFile(destinationDir);
+  }
 };
 
 exports.getDataList = function () {
