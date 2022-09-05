@@ -144,6 +144,15 @@ exports.init = function (opt) {
     `${dataOutDir}${path.sep}mpth-data.pug`,
     `- const dataListItems = ${JSON.stringify(dataList)}`
   );
+
+  const templatePug2 = `ul   
+  each item in items
+    li
+      a(href=\`\${item.pathFile}index.html\`)= item.title`;
+
+  const func = pug.compile(templatePug2, options);
+  const listOfArticles = func({ items: this.getDataList() });
+  writeFile(`${dataOutDir}${path.sep}index.html`, listOfArticles);
 };
 
 exports.getDataList = function () {
