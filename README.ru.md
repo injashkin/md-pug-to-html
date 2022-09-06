@@ -339,6 +339,8 @@ npm run start
   </html>
   ```
 
+<a name="dataListItems"></a>
+
 - MdPugToHtml сгенерирует файл `src/data/mpth-data.pug`, который будет содержать массив объектов `dataListItems`. Каждый объект массива имеет свойства:
   - `pathFile` - путь к файлу `index.html` статьи
   - `title` - заголовок статьи
@@ -431,25 +433,29 @@ const mpth = require('md-pug-to-html');
 const options = {
   sourceDir: 'content',
   templateDir: 'src/article',
+  index: false,
 };
 
 // Инициализация
 mpth.init(options);
 
 // Список созданных страниц
-const list = mpth.getList();
+const list = mpth.getDataList();
 ```
+
+Используемые методы:
+
+- `init()` запускает конвертер MdPugToHtml и создает все файлы, указанные в параграфе [Использование с помощью CLI](#использование-с-помощью-CLI).
+- `getDataList()` возвращает массив <a href="#dataListItems">dataListItems</a>
 
 В `options` можно указать:
 
 - `sourceDir` - каталог со статьями Markdown (обязательно)
-- `templateDir` - каталог с шаблоном для страниц статей (по умолчанию будет сгенерирован)
+- `templateDir` - каталог с шаблоном для страниц статей (по умолчанию `templateDir: 'mpth'`)
 - `destinationDir` - обычно, это каталог сборки проекта (по умолчанию `destinationDir: 'mpth'`)
 - `dataOutDir` - каталог, где будет хранится файл `mpth-data.pug` (по умолчанию `dataOutDir: 'mpth',`)
-
-`init()` запускает конвертер MdPugToHtml и создает все файлы, указанные в параграфе [Использование с помощью CLI](#использование-с-помощью-CLI).
-
-`getDataList()` возвращает массив `dataListItems`
+- `index` - отключает генерацию файла `index.html` (по умолчанию `index: true`)
+- `use` - запрещает использование шаблона для конвертирования статей (по умолчанию `use: true`)
 
 Более подробно читайте в [Использование с помощью CLI](#использование-с-помощью-CLI).
 

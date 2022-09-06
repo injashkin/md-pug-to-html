@@ -343,6 +343,8 @@ To file `docs/article2/index.html` the following will be compiled:
 </html>
 ```
 
+<a name="dataListItems"></a>
+
 - MdPugToHtml will generate a file `src/data/mpth-data.pug`, which will contain an array of objects called `dataListItems`. Each array object has properties:
   - `pathFile` - path to the file `index.html` articles
   - `title` - article title
@@ -435,25 +437,30 @@ const mpth = require('md-pug-to-html');
 const options = {
   sourceDir: 'content',
   templateDir: 'src/article',
+  index: false,
 };
 
 // Initialization
 mpth.init(options);
 
 // List of created pages
-const list = mpth.getList();
+const list = mpth.getDataList();
 ```
+
+Methods used:
+
+- `init()` starts the MdPugToHtml converter and creates all the files specified in the paragraph [Using CLI](#using-CLI).
+
+- `getDataList()` returns an array of <a href="#dataListItems">dataListItems</a>
 
 In `options` you can specify:
 
 - `sourceDir` - directory with Markdown articles (required)
-- `templateDir` - directory with a template for article pages (by default, it will be generated)
+- `templateDir` - a directory with a template for article pages (by default `templateDir: 'mpth'`)
 - `destinationDir` - usually, this is the project's build directory (by default `destinationDir: 'mpth'`)
 - `dataOutDir` - the directory where the `mpth-data.pug` file will be stored (by default `dataOutDir: 'mpth',`)
-
-`init()` starts the MdPugToHtml converter and creates all the files specified in the paragraph [Using CLI](#using-CLI).
-
-`getDataList()` returns an array of `dataListItems`
+- `index` - disables the generation of the `index.html` file (by default `index: true`)
+- `use` - prohibits the use of a template for converting articles (by default `use: true`)
 
 For more information, see [Using CLI](#using-CLI).
 
