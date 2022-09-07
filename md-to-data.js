@@ -92,6 +92,15 @@ function listDir(sourceDir, use, sourceDir2, destinationDir, templateDir) {
 
           const contentHtml = md.render(fileData.contentMd);
 
+          if (!fileData.dataFrontmatter.description) {
+            const numStart = contentHtml.search('<p>') + 3;
+            const numEnd = contentHtml.search('</p>');
+            fileData.dataFrontmatter.description = contentHtml.slice(
+              numStart,
+              numEnd
+            );
+          }
+
           dataList.push(fileData.dataFrontmatter);
 
           const mpthData = {};
