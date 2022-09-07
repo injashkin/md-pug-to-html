@@ -14,16 +14,16 @@ html(lang= 'ru')
   head
     meta(charset= 'utf-8')
     meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
-    meta(name= 'description' content= data.description)
+    meta(name= 'description' content= description)
     link(rel='stylesheet' href='/index.css')
     script(defer src='/index.js')
-    title= data.title
+    title= title
 
   body
     block main
       .content
         .article
-          .creationDate= \`Created: \${data.date}\`
+          .creationDate= \`Created: \${create || date}\`
           != contentHtml`;
 
 const options = {
@@ -50,18 +50,21 @@ function mkDir(dir) {
   }
 }
 
-function compileHtml(templateFile, data, options) {
+function compileHtml(templateFile, data2, options) {
   const compiledFunction = pug.compileFile(templateFile, options);
-  return compiledFunction(data);
+  return compiledFunction(data2);
 }
 
 function splitFileContents(pathFileOfSrc) {
-  const obj = {};
+  let obj = {};
   const contentMixed = fs.readFileSync(pathFileOfSrc);
-
   obj.contentMd = matter(contentMixed).content;
   obj.contentHtml = '';
-  obj.data = matter(contentMixed).data;
+  obj.mpthData = matter(contentMixed).data;
+
+  for (let key in obj.mpthData) {
+    obj[key] = obj.mpthData[key];
+  }
   return obj;
 }
 
@@ -115,8 +118,8 @@ function listDir(sourceDir, use, sourceDir2, destinationDir, templateDir) {
 }
 
 function addItemToLinkList(fileData, dirUrl) {
-  fileData.data.pathFile = `${dirUrl}${path.sep}`;
-  dataList.push(fileData.data);
+  fileData.mpthData.pathFile = `${dirUrl}${path.sep}`;
+  dataList.push(fileData.mpthData);
 }
 
 function generateIndexFile(dir) {

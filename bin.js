@@ -3,7 +3,7 @@
 const mdToData = require('./md-to-data');
 const program = require('commander');
 
-const obj = {};
+const optionsCLI = {};
 
 program
   .name('md-pug-to-html')
@@ -18,13 +18,13 @@ program
   .option('-t, --template [dir]', 'catalog of the article template', 'mpth')
   .option('-d, --data [dir]', 'the output directory of the data file', 'mpth')
   .action((dir, options) => {
-    obj.sourceDir = dir;
-    obj.use = options.use;
-    obj.index = options.index;
-    obj.destinationDir = options.out;
-    obj.templateDir = options.template;
-    obj.dataOutDir = options.data;
+    optionsCLI.sourceDir = dir;
+    optionsCLI.use = options.use;
+    optionsCLI.index = options.index;
+    optionsCLI.destinationDir = options.out;
+    optionsCLI.templateDir = options.template;
+    optionsCLI.dataOutDir = options.data;
   });
 
 program.parse();
-mdToData.init(obj);
+mdToData.init(optionsCLI);
