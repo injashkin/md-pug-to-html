@@ -56,15 +56,10 @@ function compileHtml(templateFile, data2, options) {
 }
 
 function splitFileContents(pathFileOfSrc) {
-  let obj = {};
-  const contentMixed = fs.readFileSync(pathFileOfSrc);
-  obj.contentMd = matter(contentMixed).content;
-  obj.contentHtml = '';
-  obj.mpthData = matter(contentMixed).data;
-
-  for (let key in obj.mpthData) {
-    obj[key] = obj.mpthData[key];
-  }
+  const obj = {};
+  const fileContents = fs.readFileSync(pathFileOfSrc);
+  obj.contentMd = matter(fileContents).content;
+  obj.dataFrontmatter = matter(fileContents).data;
   return obj;
 }
 
@@ -92,16 +87,27 @@ function listDir(sourceDir, use, sourceDir2, destinationDir, templateDir) {
 
         if (path.extname(pathFileOfSrc) === '.md') {
           const fileData = splitFileContents(pathFileOfSrc);
-          addItemToLinkList(fileData, dirUrl);
-          fileData.contentHtml = md.render(fileData.contentMd);
+
+          fileData.dataFrontmatter.pathFile = `${dirUrl}${path.sep}`;
+
+          const contentHtml = md.render(fileData.contentMd);
+
+          dataList.push(fileData.dataFrontmatter);
+
+          const mpthData = {};
+          mpthData.contentHtml = contentHtml;
+
+          for (let key in fileData.dataFrontmatter) {
+            mpthData[key] = fileData.dataFrontmatter[key];
+          }
 
           const htmlFromPug = use
             ? compileHtml(
                 `${templateDir}${path.sep}mpth-template.pug`,
-                fileData,
+                mpthData,
                 options
               )
-            : fileData.contentHtml;
+            : contentHtml;
 
           writeFile(`${pathDestFileObj.dir}${path.sep}index.html`, htmlFromPug);
         } else {
@@ -115,11 +121,6 @@ function listDir(sourceDir, use, sourceDir2, destinationDir, templateDir) {
   } catch (err) {
     console.log(err);
   }
-}
-
-function addItemToLinkList(fileData, dirUrl) {
-  fileData.mpthData.pathFile = `${dirUrl}${path.sep}`;
-  dataList.push(fileData.mpthData);
 }
 
 function generateIndexFile(dir) {
