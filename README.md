@@ -45,12 +45,12 @@ Read in other languages: [Russian](README.ru.md)
 ## Table of Contents
 
 - [About The Project](#about-the-project)
-- [Built With](#built-with)
 - [Installation](#installation)
 - [Using CLI](#using-CLI)
   - [The easy way](#the-easy-way)
   - [Advanced way](#advanced-way)
 - [Using API](#using-API)
+- [Built With](#built-with)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
@@ -62,7 +62,9 @@ Read in other languages: [Russian](README.ru.md)
 
 ## About The Project
 
-MdPugToHtml massively converts Markdown files to HTML. You can specify a Pug template by which all Markdown pages will be converted to HTML. Also, MdPugToHtml generates an array of objects, which contains the following data for each created HTML page:
+MdPugToHtml massively converts Markdown files to HTML files. At the same time, you can specify a Pug template by which all Markdown pages will be converted to HTML.
+
+Also, the MdPugToHtml converter generates an array of objects, which contains the following data for each created HTML page:
 
 - path to the HTML page file
 - HTML page title
@@ -89,7 +91,7 @@ This array of objects can be obtained either using the API's `getDataList()` met
 ]
 ```
 
-MdPugToHtml recursively traverses all subdirectories in the specified directory, finds Markdown files and converts them to HTML pages. At the same time, the Pug template can be used, according to which the pages will be transformed. The converted pages are then placed in the specified output directory. The structure of the source directory is completely preserved in the output directory.
+MdPugToHtml converter recursively traverses all subdirectories in the specified directory, finds Markdown files and converts them to HTML pages. At the same time, the Pug template can be used, according to which the pages will be transformed. The converted pages are then placed in the specified output directory. The structure of the source directory is completely preserved in the output directory.
 
 Markdown files may contain Frontmatter data. Frontmatter is a section at the beginning of the file, highlighted on both sides with three hyphens `---`. Frontmatter can be written in any of the YAML/TOML/JSON formats. Here is an example of how the Frontmatter is written in the YAML format in the Markdown file:
 
@@ -106,15 +108,6 @@ The need for the MdPugToHtml converter arose when creating a static page collect
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Built With
-
-- [![gray-matter][gray-matter]][graymatter-url]
-- [![markdown-it][markdown-it]][markdownit-url]
-- [![Node.js][nodejs.org]][nodejs-url]
-- [![Pug][pug.js]][pug-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ## Installation
 
 ```
@@ -127,58 +120,35 @@ npm i -D md-pug-to-html
 
 ## Using CLI
 
+In order for all of the following to work, you must have installed Node.js.
+
+In order for the `npx` command to work, you must have NPM version 5.2 or higher.
+
 ### The easy way
 
-This method allows you to easily convert the entire directory with Markdown files into HTML files. And, additionally, get an HTML file with a list of links to HTML files.
+This method allows you to easily convert the entire directory with Markdown files into HTML files.
 
-Open a terminal, create a directory, for example, `my-site`, and navigate to it:
-
-```
-mkdir my-site
-cd my-site
-```
-
-Create a `package.json` file, to do this, enter the following command in the terminal:
+Let's say you have Markdown files, they are in the `/home/my/content` directory and you just want to convert them. To do this, open a terminal and enter the following command:
 
 ```
-npm init -y
+npx -y md-pug-to-html /home/my/content
 ```
 
-Install MdPugToHtml:
+The MdPugToHtml converter will be installed and then Markdown files will be converted. The installation will be performed only when the command is run for the first time. On subsequent launches, only conversion will be performed.
 
-```
-npm i -D md-pug-to-html
-```
+Open the directory from which you ran the command in the terminal and you will see the `npth` directory there, where the compiled HTML files are located.
 
-In the `package.json` file, configure MdPugToHtml:
+Additionally, there will be three files in the `npth` directory:
 
-```json
-"scripts": {
-  "start": "md-pug-to-html /home/my/content",
-}
-```
+- `index.html` - contains a list of links to the created Html files. If you open this file in a browser, you can view the created pages from the browser by clicking on the links. You can disable file creation `index.html` by applying the `-I` option with the above command.
 
-Where `/home/my/content` is the path to the directory where the Markdown files are located.
+- `mpth-data.pug' - contains an array of objects with data about HTML files. This array can be used, for example, to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
 
-Now run MdPugToHtml. To do this, run the command from the `my-site` directory in the terminal:
-
-```
-npm run start
-```
-
-As a result, the `mpth` directory will be created, in which you will find HTML pages converted from Markdown files.
-
-Also, three files will be created:
-
-- `mpth/index.html`, which contains a list of links to the created Html files. If you open this file in a browser, you can view the created pages from the browser by clicking on the links.
-
-- `mpth/mpth-data.pug`, which contains an array of objects. This array can be used, for example, to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
-
-- `mpth/mpth-template.pug`, which contains the Pu template. It is this template that uses the MdPugToHtml converter to create HTML pages, if template conversion is allowed. You can change the template and run the `npm run start` command again. The articles will be reformatted according to the new template.
+- `mpth-template.pug` - Pug template. This particular template is used by the MdPugToHtml converter to create HTML pages if template conversion is allowed. You can disable template conversion with the `-n` option. You can change the template and run the `npx md-pug-to-html /home/my/content` command again. The articles will be reformatted according to the new template. If you messed up in the template and your files are not being converted for some reason, then delete the `mpth-template.pug` template and restart the above command. The template file will be created in its original form.
 
 ### Advanced way
 
-Below is the information for MdPugToHtml CLI
+Below is the information for the MdPugToHtml CLI converter
 
 ```
 Usage: md-pug-to-html [options] <dir>
@@ -463,6 +433,15 @@ In `options` you can specify:
 - `use` - prohibits the use of a template for converting articles (by default `use: true`)
 
 For more information, see [Using CLI](#using-CLI).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Built With
+
+- [![gray-matter][gray-matter]][graymatter-url]
+- [![markdown-it][markdown-it]][markdownit-url]
+- [![Node.js][nodejs.org]][nodejs-url]
+- [![Pug][pug.js]][pug-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
