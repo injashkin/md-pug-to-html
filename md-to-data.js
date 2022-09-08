@@ -132,7 +132,11 @@ function listDir(sourceDir, use, sourceDir2, destinationDir, templateDir) {
   }
 }
 
-function generateIndexFile(dir) {
+exports.getDataList = function () {
+  return dataList;
+};
+
+const generateIndexFile = (dir) => {
   const templatePug = `ul   
   each item in items
     li
@@ -141,7 +145,7 @@ function generateIndexFile(dir) {
   const func = pug.compile(templatePug, options);
   const listOfArticles = func({ items: this.getDataList() });
   writeFile(`${dir}${path.sep}index.html`, listOfArticles);
-}
+};
 
 exports.init = function (opt) {
   const {
@@ -173,8 +177,4 @@ exports.init = function (opt) {
   if (index) {
     generateIndexFile(destinationDir);
   }
-};
-
-exports.getDataList = function () {
-  return dataList;
 };
