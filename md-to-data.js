@@ -59,14 +59,9 @@ function splitFileContents(pathFileOfSrc) {
   return obj;
 }
 
-function listDir(
-  sourceDir,
-  options,
-  use,
-  sourceDir2,
-  destinationDir,
-  templateDir
-) {
+function listDir(options, sourceDir2) {
+  const { use, sourceDir, templateDir, destinationDir } = options;
+
   try {
     const filesAndDirs = fs.readdirSync(sourceDir2);
 
@@ -78,14 +73,7 @@ function listDir(
 
       if (status.isDirectory()) {
         const pathDirOfSrc = pathFOD;
-        listDir(
-          sourceDir,
-          options,
-          use,
-          pathDirOfSrc,
-          destinationDir,
-          templateDir
-        ); // recursion
+        listDir(options, pathDirOfSrc); // recursion
       } else {
         const pathFileOfSrc = pathFOD;
         const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
@@ -146,7 +134,8 @@ exports.getDataList = function () {
   return dataList;
 };
 
-const generateIndexFile = (dir, options) => {
+const generateIndexFile = (options) => {
+  const { destinationDir } = options;
   const templatePug = `ul   
   each item in items
     li
@@ -154,7 +143,7 @@ const generateIndexFile = (dir, options) => {
 
   const func = pug.compile(templatePug, options);
   const listOfArticles = func({ items: this.getDataList() });
-  writeFile(`${dir}${path.sep}index.html`, listOfArticles);
+  writeFile(`${destinationDir}${path.sep}index.html`, listOfArticles);
 };
 
 exports.init = function (options) {
@@ -167,7 +156,17 @@ exports.init = function (options) {
     dataOutDir = 'mpth',
   } = options;
 
+  if (!sourceDir) {
+    return console.log(
+      'ERROR: The directory from which the .md files can be retrieved is not specified'
+    );
+  }
+
   const sourceDir2 = sourceDir;
+  options.destinationDir = destinationDir;
+  options.templateDir = templateDir;
+  options.use = use;
+
   if (options.pretty === undefined) options.pretty = true;
 
   if (!fs.existsSync(`${templateDir}${path.sep}mpth-template.pug`)) {
@@ -178,7 +177,7 @@ exports.init = function (options) {
 
   mkDir(dataOutDir);
 
-  listDir(sourceDir, options, use, sourceDir2, destinationDir, templateDir);
+  listDir(options, sourceDir2);
 
   writeFile(
     `${dataOutDir}${path.sep}mpth-data.pug`,
@@ -186,6 +185,6 @@ exports.init = function (options) {
   );
 
   if (index) {
-    generateIndexFile(destinationDir, options);
+    generateIndexFile(options);
   }
 };

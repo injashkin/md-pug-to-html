@@ -15,19 +15,19 @@ program
     'Massively converts Markdown to HTML with the ability to use Pug templates'
   )
   .version('2.0.0')
-  .argument('<dir>', 'the directory from which to get the .md files')
+  .argument('[dir]', 'the directory from which to get the .md files')
   .option('-O, --obj <str|path>   JSON/JavaScript options object or file')
   .option('-n, --no-use', 'do not use the article template')
   .option('-I, --no-index', 'do not generate an index.html file')
-  .option('-o, --out [dir]', 'project build directory', 'mpth')
-  .option('-t, --template [dir]', 'catalog of the article template', 'mpth')
-  .option('-d, --data [dir]', 'the output directory of the data file', 'mpth')
+  .option('-o, --out <dir>', 'project build directory', 'mpth')
+  .option('-t, --template <dir>', 'catalog of the article template', 'mpth')
+  .option('-d, --data <dir>', 'the output directory of the data file', 'mpth')
   .action((dir, opt) => {
     if (opt.obj) {
       options = parseObj(opt.obj);
     }
 
-    options.sourceDir = dir;
+    options.sourceDir = options.sourceDir || dir;
     options.use = options.use || opt.use;
     options.index = options.index || opt.index;
     options.destinationDir = options.destinationDir || opt.out;
