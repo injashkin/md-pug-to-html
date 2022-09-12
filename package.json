@@ -14,8 +14,9 @@
   "keywords": [
     "markdown",
     "pug",
-    "site",
+    "converter",
     "html",
+    "site",
     "frontmatter"
   ],
   "author": {
