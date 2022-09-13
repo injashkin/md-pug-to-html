@@ -2,13 +2,13 @@
   "name": "md-pug-to-html",
   "version": "2.2.2",
   "description": "Massively compiles HTML pages from Markdown files using a Pug template",
-  "main": "md-to-data.js",
+  "main": "index.js",
   "bin": {
     "md-pug-to-html": "./bin.js"
   },
   "scripts": {
     "md": "node index -i=content -t=src/pages/article",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": "https://github.com/injashkin/md-pug-to-html.git",
   "keywords": [
@@ -31,5 +31,8 @@
     "markdown-it": "^13.0.1",
     "pug": "^3.0.2",
     "pug-cli": "^1.0.0-alpha6"
+  },
+  "devDependencies": {
+    "jest": "^29.0.3"
   }
 }

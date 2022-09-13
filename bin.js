@@ -4,7 +4,7 @@
 
 var fs = require('fs');
 var path = require('path');
-const mdToData = require('./md-to-data');
+const mdToData = require('./index');
 const program = require('commander');
 
 let options = {};
