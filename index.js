@@ -26,7 +26,7 @@ html(lang= 'ru')
           .creationDate= \`Created: \${create || date}\`
           != contentHtml`;
 
-const dataList = [];
+let dataList = [];
 
 function writeFile(path, content) {
   try {
@@ -59,7 +59,7 @@ function splitFileContents(pathFileOfSrc) {
   return obj;
 }
 
-function listDir(options, sourceDir2) {
+function listDir(options, sourceDir2, list) {
   const { use, sourceDir, templateDir, destinationDir } = options;
 
   try {
@@ -73,7 +73,7 @@ function listDir(options, sourceDir2) {
 
       if (status.isDirectory()) {
         const pathDirOfSrc = pathFOD;
-        listDir(options, pathDirOfSrc); // recursion
+        listDir(options, pathDirOfSrc, list); // recursion
       } else {
         const pathFileOfSrc = pathFOD;
         const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
@@ -99,7 +99,8 @@ function listDir(options, sourceDir2) {
             );
           }
 
-          dataList.push(fileData.dataFrontmatter);
+          list.push(fileData.dataFrontmatter);
+          dataList = list;
 
           const mpthData = {};
           mpthData.contentHtml = contentHtml;
@@ -146,14 +147,15 @@ const generateIndexFile = (options) => {
 
   const func = pug.compile(templatePug, options);
   const listOfArticles = func({ items: this.getDataList() });
-  writeFile(`${destinationDir}${path.sep}index.html`, listOfArticles);
+
+  writeFile(`${destinationDir}${path.sep}mpth-articles.html`, listOfArticles);
 };
 
 exports.init = function (options = {}) {
   const {
     sourceDir,
     use = true,
-    index,
+    index = true,
     destinationDir = 'mpth',
     templateDir = 'mpth',
     dataOutDir = 'mpth',
@@ -181,7 +183,8 @@ exports.init = function (options = {}) {
 
   mkDir(dataOutDir);
 
-  listDir(options, sourceDir2);
+  const list = [];
+  listDir(options, sourceDir2, list);
 
   writeFile(
     `${dataOutDir}${path.sep}mpth-data.pug`,
