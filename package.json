@@ -8,7 +8,8 @@
   },
   "scripts": {
     "md": "node index -i=content -t=src/pages/article",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "repository": "https://github.com/injashkin/md-pug-to-html.git",
   "keywords": [

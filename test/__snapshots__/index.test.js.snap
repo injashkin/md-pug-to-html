@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`init module mpth-articles.html file with a list of articles Writing to the mpth-articles.html file is correct 1`] = `
+"
+<ul>  
+  <li><a href="article1/index.html">Title of the first article</a></li>
+  <li><a href="article2/index.html">Title of the second article</a></li>
+</ul>"
+`;
