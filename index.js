@@ -116,7 +116,10 @@ function listDir(options, sourceDir2) {
               )
             : contentHtml;
 
-          writeFile(`${pathDestFileObj.dir}${path.sep}index.html`, htmlFromPug);
+          writeFile(
+            `${pathDestFileObj.dir}${path.sep}${pathDestFileObj.name}.html`,
+            htmlFromPug
+          );
         } else {
           // If the file is not with the extension .md, then it is simply copied
           // to the article catalog
@@ -146,11 +149,11 @@ const generateIndexFile = (options) => {
   writeFile(`${destinationDir}${path.sep}index.html`, listOfArticles);
 };
 
-exports.init = function (options) {
+exports.init = function (options = {}) {
   const {
     sourceDir,
     use = true,
-    index = true,
+    index,
     destinationDir = 'mpth',
     templateDir = 'mpth',
     dataOutDir = 'mpth',
@@ -166,6 +169,7 @@ exports.init = function (options) {
   options.destinationDir = destinationDir;
   options.templateDir = templateDir;
   options.use = use;
+  options.index = index;
 
   if (options.pretty === undefined) options.pretty = true;
 
