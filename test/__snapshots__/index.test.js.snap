@@ -3,7 +3,31 @@
 exports[`init module mpth-articles.html file with a list of articles Writing to the mpth-articles.html file is correct 1`] = `
 "
 <ul>  
-  <li><a href="article1/index.html">Title of the first article</a></li>
-  <li><a href="article2/index.html">Title of the second article</a></li>
+  <li><a href="article1/article1.html">Title of the first article</a></li>
+  <li><a href="article2/article2.html">Title of the second article</a></li>
+  <li><a href="article3.html">Title of the third article</a></li>
 </ul>"
+`;
+
+exports[`init module mpth-data.pug data file Writing to the mpth-data.pug file is correct 1`] = `"- const dataListItems = [{"title":"Title of the first article","create":"13-09-2022","description":"Brief description of the first article","pathFile":"article1/","nameFile":"article1"},{"title":"Title of the second article","create":"14-09-2022","description":"Brief description of the second article","pathFile":"article2/","nameFile":"article2"},{"title":"Title of the third article","create":"14-09-2022","pathFile":"","description":"Paragraph of the third article","nameFile":"article3"}]"`;
+
+exports[`init module mpth-template.pug template file Writing to the mpth-template.pug file is correct 1`] = `
+"block variables
+
+doctype html
+html(lang= 'ru')
+  head
+    meta(charset= 'utf-8')
+    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+    meta(name= 'description' content= description)
+    link(rel='stylesheet' href='/index.css')
+    script(defer src='/index.js')
+    title= title
+
+  body
+    block main
+      .content
+        .article
+          .creationDate= \`Created: \${create || date}\`
+          != contentHtml"
 `;

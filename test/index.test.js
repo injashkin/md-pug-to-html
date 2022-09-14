@@ -15,7 +15,7 @@ const options = {
 describe('init module', () => {
   describe('mpth-articles.html file with a list of articles', () => {
     test('If the index option is not specified, then by default it is true, which means a mpth-articles.html file is generated', () => {
-      fs.rmSync('test/in-out/dest', { recursive: true, force: true });
+      fs.rmSync(options.destinationDir, { recursive: true, force: true });
       mpth.init(options);
       const list = mpth.getDataList();
       expect(
@@ -24,7 +24,7 @@ describe('init module', () => {
     });
 
     test('If the index option is set to false, then a mpth-articles.html is not generated', () => {
-      fs.rmSync('test/in-out/dest', { recursive: true, force: true });
+      fs.rmSync(options.destinationDir, { recursive: true, force: true });
       options.index = false;
       mpth.init(options);
       const list = mpth.getDataList();
@@ -34,7 +34,7 @@ describe('init module', () => {
     });
 
     test('Writing to the mpth-articles.html file is correct', () => {
-      fs.rmSync('test/in-out/dest', { recursive: true, force: true });
+      fs.rmSync(options.destinationDir, { recursive: true, force: true });
       options.index = true;
       mpth.init(options);
       expect(
@@ -42,9 +42,39 @@ describe('init module', () => {
       ).toMatchSnapshot();
     });
   });
+
+  describe('mpth-data.pug data file', () => {
+    test('Writing to the mpth-data.pug file is correct', () => {
+      fs.rmSync(options.destinationDir, { recursive: true, force: true });
+      mpth.init(options);
+      expect(
+        fs.readFileSync(`${options.dataOutDir}/mpth-data.pug`, 'utf8')
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe('mpth-template.pug template file', () => {
+    test('Writing to the mpth-template.pug file is correct', () => {
+      fs.rmSync(options.destinationDir, { recursive: true, force: true });
+      mpth.init(options);
+      expect(
+        fs.readFileSync(`${options.templateDir}/mpth-template.pug`, 'utf8')
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe('Creating a description', () => {
+    test('Description of the article does not exist, so it is created from the first paragraph', () => {
+      fs.rmSync(options.destinationDir, { recursive: true, force: true });
+      mpth.init(options);
+      const lists = mpth.getDataList();
+      expect(lists[2].description).toBe('Paragraph of the third article');
+    });
+  });
 });
 
 describe('getDataList module', () => {
+  fs.rmSync(options.destinationDir, { recursive: true, force: true });
   mpth.init(options);
   const lists = mpth.getDataList();
 
