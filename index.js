@@ -99,6 +99,8 @@ function listDir(options, sourceDir2, list) {
             );
           }
 
+          fileData.dataFrontmatter.nameFile = pathDestFileObj.name;
+
           list.push(fileData.dataFrontmatter);
           dataList = list;
 
@@ -143,7 +145,7 @@ const generateIndexFile = (options) => {
   const templatePug = `ul   
   each item in items
     li
-      a(href=\`\${item.pathFile}index.html\`)= item.title`;
+      a(href=\`\${item.pathFile}\${item.nameFile}.html\`)= item.title`;
 
   const func = pug.compile(templatePug, options);
   const listOfArticles = func({ items: this.getDataList() });
