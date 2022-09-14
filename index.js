@@ -79,14 +79,16 @@ function listDir(options, sourceDir2, list) {
         const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
         const pathDestFileObj = path.parse(pathDestFile);
         const dirOut = path.parse(pathDestFile).dir;
-        const dirUrl = dirOut.replace(`${destinationDir}${path.sep}`, '');
+
+        const dirUrl = dirOut.replace(destinationDir, '').slice(1);
 
         mkDir(dirOut);
 
         if (path.extname(pathFileOfSrc) === '.md') {
           const fileData = splitFileContents(pathFileOfSrc);
 
-          fileData.dataFrontmatter.pathFile = `${dirUrl}${path.sep}`;
+          fileData.dataFrontmatter.pathFile =
+            dirUrl.length === 0 ? `${dirUrl}` : `${dirUrl}${path.sep}`;
 
           const contentHtml = md.render(fileData.contentMd);
 
