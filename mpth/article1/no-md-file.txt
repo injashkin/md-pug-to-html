@@ -1,1 +1,0 @@
-If the file is not with the extension .md, then it is simply copied to the article catalog

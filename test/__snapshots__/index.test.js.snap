@@ -1,6 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`init module mpth-articles.html file with a list of articles Writing to the mpth-articles.html file is correct 1`] = `
+exports[`getDataList module In the "list" array, the first object contains the "title" property with the content "Title of the first article" 1`] = `
+[
+  {
+    "create": "13-09-2022",
+    "description": "Brief description of the first article",
+    "nameFile": "article1",
+    "pathFile": "article1/",
+    "title": "Title of the first article",
+  },
+  {
+    "create": "14-09-2022",
+    "description": "Brief description of the second article",
+    "nameFile": "article2",
+    "pathFile": "article2/",
+    "title": "Title of the second article",
+  },
+  {
+    "create": "14-09-2022",
+    "description": "Paragraph of the third article",
+    "nameFile": "article3",
+    "pathFile": "",
+    "title": "Title of the third article",
+  },
+]
+`;
+
+exports[`init module dataOutDir option and mpth-data.pug file dataOutDir specified, mpth-data.pug file in the test/in-out/dest directory 1`] = `"- const dataListItems = [{"title":"Title of the first article","create":"13-09-2022","description":"Brief description of the first article","pathFile":"article1/","nameFile":"article1"},{"title":"Title of the second article","create":"14-09-2022","description":"Brief description of the second article","pathFile":"article2/","nameFile":"article2"},{"title":"Title of the third article","create":"14-09-2022","pathFile":"","description":"Paragraph of the third article","nameFile":"article3"}]"`;
+
+exports[`init module index option and mpth-articles.html file index is specified true (by default), the mpth-articles.html is generated 1`] = `
 "
 <ul>  
   <li><a href="article1/article1.html">Title of the first article</a></li>
@@ -9,9 +37,7 @@ exports[`init module mpth-articles.html file with a list of articles Writing to 
 </ul>"
 `;
 
-exports[`init module mpth-data.pug data file Writing to the mpth-data.pug file is correct 1`] = `"- const dataListItems = [{"title":"Title of the first article","create":"13-09-2022","description":"Brief description of the first article","pathFile":"article1/","nameFile":"article1"},{"title":"Title of the second article","create":"14-09-2022","description":"Brief description of the second article","pathFile":"article2/","nameFile":"article2"},{"title":"Title of the third article","create":"14-09-2022","pathFile":"","description":"Paragraph of the third article","nameFile":"article3"}]"`;
-
-exports[`init module mpth-template.pug template file Writing to the mpth-template.pug file is correct 1`] = `
+exports[`init module temlateDir option and mpth-template.pug file templateDir not specified, mpth-template.pug file in the mpth directory 1`] = `
 "block variables
 
 doctype html
@@ -32,8 +58,52 @@ html(lang= 'ru')
           != contentHtml"
 `;
 
-exports[`init module use option 1`] = `
+exports[`init module temlateDir option and mpth-template.pug file templateDir specified, mpth-template.pug file in the test/in-out/dest directory 1`] = `
+"block variables
+
+doctype html
+html(lang= 'ru')
+  head
+    meta(charset= 'utf-8')
+    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+    meta(name= 'description' content= description)
+    link(rel='stylesheet' href='/index.css')
+    script(defer src='/index.js')
+    title= title
+
+  body
+    block main
+      .content
+        .article
+          .creationDate= \`Created: \${create || date}\`
+          != contentHtml"
+`;
+
+exports[`init module use option use is specified false, the template is not used 1`] = `
 "<h2>H2 header</h2>
 <p>Paragraph of the first article</p>
 "
+`;
+
+exports[`init module use option use is specified true (by default), the template is used 1`] = `
+"<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Brief description of the first article">
+    <link rel="stylesheet" href="/index.css">
+    <script defer src="/index.js"></script>
+    <title>Title of the first article</title>
+  </head>
+  <body>
+    <div class="content">
+      <div class="article">
+        <div class="creationDate">Created: 13-09-2022</div><h2>H2 header</h2>
+<p>Paragraph of the first article</p>
+
+      </div>
+    </div>
+  </body>
+</html>"
 `;
