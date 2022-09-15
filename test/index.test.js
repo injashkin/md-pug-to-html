@@ -49,7 +49,20 @@ describe('init module', () => {
     options.dataOutDir = 'test/in-out/dest';
   });
 
-  describe('mpth-articles.html fimpth.le with a list of articles', () => {
+  test('use option', () => {
+    fs.rmSync(options.destinationDir, { recursive: true, force: true });
+    options.use = false;
+    init(options);
+    expect(
+      fs.readFileSync(
+        `${options.destinationDir}/article1/article1.html`,
+        'utf8'
+      )
+    ).toMatchSnapshot();
+    options.use = true;
+  });
+
+  describe('mpth-articles.html file with a list of articles', () => {
     test('If the index option is not specified, then by default it is true, which means a mpth-articles.html file is generated', () => {
       fs.rmSync(options.destinationDir, { recursive: true, force: true });
       options.sourceDir = 'test/in-out/content';
