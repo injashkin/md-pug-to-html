@@ -28,24 +28,6 @@ html(lang= 'ru')
 
 let dataList = [];
 
-function writeFile(path, content) {
-  try {
-    fs.writeFileSync(path, content);
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-function mkDir(dir) {
-  try {
-    if (!fs.existsSync(dir)) {
-      return fs.mkdirSync(dir, { recursive: true });
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}
-
 function compileHtml(templateFile, data2, options) {
   const compiledFunction = pug.compileFile(templateFile, options);
   return compiledFunction(data2);
@@ -62,79 +44,75 @@ function splitFileContents(pathFileOfSrc) {
 function listDir(options, sourceDir2, list) {
   const { use, sourceDir, templateDir, destinationDir } = options;
 
-  try {
-    const filesAndDirs = fs.readdirSync(sourceDir2);
+  const filesAndDirs = fs.readdirSync(sourceDir2);
 
-    for (let fileOrDir of filesAndDirs) {
-      let pathFileOrDir = `${sourceDir2}${path.sep}${fileOrDir}`;
+  for (let fileOrDir of filesAndDirs) {
+    let pathFileOrDir = `${sourceDir2}${path.sep}${fileOrDir}`;
 
-      const status = fs.statSync(pathFileOrDir);
-      const pathFOD = pathFileOrDir;
+    const status = fs.statSync(pathFileOrDir);
+    const pathFOD = pathFileOrDir;
 
-      if (status.isDirectory()) {
-        const pathDirOfSrc = pathFOD;
-        listDir(options, pathDirOfSrc, list); // recursion
-      } else {
-        const pathFileOfSrc = pathFOD;
-        const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
-        const pathDestFileObj = path.parse(pathDestFile);
-        const dirOut = path.parse(pathDestFile).dir;
+    if (status.isDirectory()) {
+      const pathDirOfSrc = pathFOD;
+      listDir(options, pathDirOfSrc, list); // recursion
+    } else {
+      const pathFileOfSrc = pathFOD;
+      const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
+      const pathDestFileObj = path.parse(pathDestFile);
+      const dirOut = path.parse(pathDestFile).dir;
 
-        const dirUrl = dirOut.replace(destinationDir, '').slice(1);
+      const dirUrl = dirOut.replace(destinationDir, '').slice(1);
 
-        mkDir(dirOut);
+      fs.mkdirSync(dirOut, { recursive: true });
 
-        if (path.extname(pathFileOfSrc) === '.md') {
-          const fileData = splitFileContents(pathFileOfSrc);
+      if (path.extname(pathFileOfSrc) === '.md') {
+        const fileData = splitFileContents(pathFileOfSrc);
 
-          fileData.dataFrontmatter.pathFile =
-            dirUrl.length === 0 ? `${dirUrl}` : `${dirUrl}${path.sep}`;
+        fileData.dataFrontmatter.pathFile =
+          dirUrl.length === 0 ? `${dirUrl}` : `${dirUrl}${path.sep}`;
 
-          const contentHtml = md.render(fileData.contentMd);
+        const contentHtml = md.render(fileData.contentMd);
 
-          if (!fileData.dataFrontmatter.description) {
-            const numStart = contentHtml.search('<p>') + 3;
-            const numEnd = contentHtml.search('</p>');
-            fileData.dataFrontmatter.description = contentHtml.slice(
-              numStart,
-              numEnd
-            );
-          }
-
-          fileData.dataFrontmatter.nameFile = pathDestFileObj.name;
-
-          list.push(fileData.dataFrontmatter);
-          dataList = list;
-
-          const mpthData = {};
-          mpthData.contentHtml = contentHtml;
-
-          for (let key in fileData.dataFrontmatter) {
-            mpthData[key] = fileData.dataFrontmatter[key];
-          }
-
-          const htmlFromPug = use
-            ? compileHtml(
-                `${templateDir}${path.sep}mpth-template.pug`,
-                mpthData,
-                options
-              )
-            : contentHtml;
-
-          writeFile(
-            `${pathDestFileObj.dir}${path.sep}${pathDestFileObj.name}.html`,
-            htmlFromPug
+        if (!fileData.dataFrontmatter.description) {
+          const numStart = contentHtml.search('<p>') + 3;
+          const numEnd = contentHtml.search('</p>');
+          fileData.dataFrontmatter.description = contentHtml.slice(
+            numStart,
+            numEnd
           );
-        } else {
-          // If the file is not with the extension .md, then it is simply copied
-          // to the article catalog
-          const pathDestFile = pathFOD.replace(sourceDir, destinationDir);
-          fs.copyFileSync(pathFileOfSrc, pathDestFile);
         }
+
+        fileData.dataFrontmatter.nameFile = pathDestFileObj.name;
+
+        list.push(fileData.dataFrontmatter);
+        dataList = list;
+
+        const mpthData = {};
+        mpthData.contentHtml = contentHtml;
+
+        for (let key in fileData.dataFrontmatter) {
+          mpthData[key] = fileData.dataFrontmatter[key];
+        }
+
+        const htmlFromPug = use
+          ? compileHtml(
+              `${templateDir}${path.sep}mpth-template.pug`,
+              mpthData,
+              options
+            )
+          : contentHtml;
+
+        fs.writeFileSync(
+          `${pathDestFileObj.dir}${path.sep}${pathDestFileObj.name}.html`,
+          htmlFromPug
+        );
+      } else {
+        // If the file is not with the extension .md, then it is simply copied
+        // to the article catalog
+        const pathDestFile = pathFOD.replace(sourceDir, destinationDir);
+        fs.copyFileSync(pathFileOfSrc, pathDestFile);
       }
     }
-  } catch (err) {
-    console.log(err);
   }
 }
 
@@ -152,7 +130,10 @@ const generateIndexFile = (options) => {
   const func = pug.compile(templatePug, options);
   const listOfArticles = func({ items: this.getDataList() });
 
-  writeFile(`${destinationDir}${path.sep}mpth-articles.html`, listOfArticles);
+  fs.writeFileSync(
+    `${destinationDir}${path.sep}mpth-articles.html`,
+    listOfArticles
+  );
 };
 
 exports.init = function (options = {}) {
@@ -166,7 +147,7 @@ exports.init = function (options = {}) {
   } = options;
 
   if (!sourceDir) {
-    return console.log(
+    throw new Error(
       'ERROR: The directory from which the .md files can be retrieved is not specified'
     );
   }
@@ -180,17 +161,17 @@ exports.init = function (options = {}) {
   if (options.pretty === undefined) options.pretty = true;
 
   if (!fs.existsSync(`${templateDir}${path.sep}mpth-template.pug`)) {
-    mkDir(templateDir);
+    fs.mkdirSync(templateDir, { recursive: true });
 
-    writeFile(`${templateDir}${path.sep}mpth-template.pug`, templatePug);
+    fs.writeFileSync(`${templateDir}${path.sep}mpth-template.pug`, templatePug);
   }
 
-  mkDir(dataOutDir);
+  fs.mkdirSync(dataOutDir, { recursive: true });
 
   const list = [];
   listDir(options, sourceDir2, list);
 
-  writeFile(
+  fs.writeFileSync(
     `${dataOutDir}${path.sep}mpth-data.pug`,
     `- const dataListItems = ${JSON.stringify(dataList)}`
   );
