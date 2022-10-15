@@ -42,8 +42,7 @@ function splitFileContents(pathFileOfSrc) {
 }
 
 function listDir(options, sourceDir2, list) {
-  const { use, sourceDir, templateDir, destinationDir } = options;
-
+  const { useTemplate, sourceDir, templateDir, destinationDir } = options;
   const filesAndDirs = fs.readdirSync(sourceDir2);
 
   for (let fileOrDir of filesAndDirs) {
@@ -57,9 +56,19 @@ function listDir(options, sourceDir2, list) {
       listDir(options, pathDirOfSrc, list); // recursion
     } else {
       const pathFileOfSrc = pathFOD;
+
       const pathDestFile = pathFileOfSrc.replace(sourceDir, destinationDir);
+
       const pathDestFileObj = path.parse(pathDestFile);
-      const dirOut = path.parse(pathDestFile).dir;
+
+      if (pathDestFileObj.name !== 'index' && pathDestFileObj.ext === '.md') {
+        pathDestFileObj.dir = `${pathDestFileObj.dir}${path.sep}${pathDestFileObj.name}`;
+
+        fs.mkdirSync(`${pathDestFileObj.dir}`, { recursive: true });
+        pathDestFileObj.name = 'index';
+      }
+
+      const dirOut = pathDestFileObj.dir;
 
       const dirUrl = dirOut.replace(destinationDir, '').slice(1);
 
@@ -67,9 +76,8 @@ function listDir(options, sourceDir2, list) {
 
       if (path.extname(pathFileOfSrc) === '.md') {
         const fileData = splitFileContents(pathFileOfSrc);
-
         fileData.dataFrontmatter.pathFile =
-          dirUrl.length === 0 ? `${dirUrl}` : `${dirUrl}${path.sep}`;
+          dirUrl.length === 0 ? '' : `${dirUrl}${path.sep}`;
 
         const contentHtml = md.render(fileData.contentMd);
 
@@ -82,9 +90,8 @@ function listDir(options, sourceDir2, list) {
           );
         }
 
-        fileData.dataFrontmatter.nameFile = pathDestFileObj.name;
-
         list.push(fileData.dataFrontmatter);
+
         dataList = list;
 
         const mpthData = {};
@@ -94,7 +101,7 @@ function listDir(options, sourceDir2, list) {
           mpthData[key] = fileData.dataFrontmatter[key];
         }
 
-        const htmlFromPug = use
+        const htmlFromPug = useTemplate
           ? compileHtml(
               `${templateDir}${path.sep}mpth-template.pug`,
               mpthData,
@@ -125,7 +132,7 @@ const generateIndexFile = (options) => {
   const templatePug = `ul   
   each item in items
     li
-      a(href=\`\${item.pathFile}\${item.nameFile}.html\`)= item.title`;
+      a(href=\`\${item.pathFile}\index.html\`)= item.title`;
 
   const func = pug.compile(templatePug, options);
   const listOfArticles = func({ items: this.getDataList() });
@@ -155,7 +162,7 @@ exports.init = function (options = {}) {
   const sourceDir2 = sourceDir;
   options.destinationDir = destinationDir;
   options.templateDir = templateDir;
-  options.use = use;
+  options.useTemplate = use;
   options.index = index;
 
   if (options.pretty === undefined) options.pretty = true;
@@ -169,6 +176,7 @@ exports.init = function (options = {}) {
   fs.mkdirSync(dataOutDir, { recursive: true });
 
   const list = [];
+
   listDir(options, sourceDir2, list);
 
   fs.writeFileSync(

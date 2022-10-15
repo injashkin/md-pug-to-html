@@ -80,22 +80,22 @@ describe('init module', () => {
 
   describe('use option', () => {
     test('use is specified false, the template is not used', () => {
-      options.use = false;
+      options.useTemplate = false;
       init(options);
       expect(
         fs.readFileSync(
-          `${options.destinationDir}/article1/article1.html`,
+          `${options.destinationDir}/article1/article1/index.html`,
           'utf8'
         )
       ).toMatchSnapshot();
     });
 
     test('use is specified true (by default), the template is used', () => {
-      options.use = true;
+      options.useTemplate = true;
       init(options);
       expect(
         fs.readFileSync(
-          `${options.destinationDir}/article1/article1.html`,
+          `${options.destinationDir}/article1/article1/index.html`,
           'utf8'
         )
       ).toMatchSnapshot();
