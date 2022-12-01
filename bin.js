@@ -22,6 +22,7 @@ program
   .option('-o, --out <dir>', 'project build directory', 'mpth')
   .option('-t, --template <dir>', 'catalog of the article template', 'mpth')
   .option('-d, --data <dir>', 'the output directory of the data file', 'mpth')
+  .option('-s, --styles <name>', 'theme name', 'github')
   .action((dir, opt) => {
     if (opt.obj) {
       options = parseObj(opt.obj);
@@ -33,6 +34,7 @@ program
     options.destinationDir = options.destinationDir || opt.out;
     options.templateDir = options.templateDir || opt.template;
     options.dataOutDir = options.dataOutDir || opt.data;
+    options.styles = options.styles || opt.styles;
   });
 
 program.parse();

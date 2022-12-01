@@ -7,24 +7,60 @@ const pug = require('pug');
 const MarkdownIt = require('markdown-it');
 const md = new MarkdownIt();
 
-const templatePug = `block variables
+function getTemplatePug(level) {
+  return `block variables
 
-doctype html
-html(lang= 'ru')
-  head
-    meta(charset= 'utf-8')
-    meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
-    meta(name= 'description' content= description)
-    link(rel='stylesheet' href='/index.css')
-    script(defer src='/index.js')
-    title= title
+  doctype html
+  html(lang= 'ru')
+    head
+      meta(charset= 'utf-8')
+      meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+      meta(name= 'description' content= description)
+      link(rel='stylesheet' href=urlCss)
+      script(defer src=urlJs)
+      title= title
 
-  body
-    block main
-      .content
-        .article
-          .creationDate= \`Created: \${create || date}\`
-          != contentHtml`;
+    body
+      block main
+        .content
+          .article
+            .creationDate= \`Created: \${create || date}\`
+            != contentHtml`;
+}
+
+/**
+ * Создает файл со списком ссылок на статьи
+ * @param {*} options
+ */
+const generateIndexFile = (options) => {
+  const { destinationDir, styles } = options;
+  const templatePug = `block variables
+
+  doctype html
+  html(lang= 'ru')
+    head
+      meta(charset= 'utf-8')
+      meta(name= 'viewport' content= 'width=device-width, initial-scale=1')
+      meta(name= 'description' content= description)
+      link(rel='stylesheet' href='${styles}.css')
+      script(defer src='index.js')
+      title= title
+
+    body
+      block main
+        ul   
+          each item in items
+            li
+              a(href=\`\${item.pathFile}\index.html\`)= item.title`;
+
+  const func = pug.compile(templatePug, options);
+  const listOfArticles = func({ items: this.getDataList() });
+
+  fs.writeFileSync(
+    `${destinationDir}${path.sep}mpth-articles.html`,
+    listOfArticles
+  );
+};
 
 let dataList = [];
 
@@ -41,8 +77,22 @@ function splitFileContents(pathFileOfSrc) {
   return obj;
 }
 
+/**
+ * Получает URL и возвращает уровень вложенности от корня
+ * в виде строки "../../../" или "..\\..\\..\\" в
+ * зависимости от системы
+ * @param {*} url Путь к файлу без его имени
+ * @returns Строка вида "../../" или "..\\..\\"
+ */
+function getNestingFromRoot(url) {
+  const arr = url.split(path.sep);
+  const lengthArr = arr.length;
+  return `..${path.sep}`.repeat(lengthArr);
+}
+
 function listDir(options, sourceDir2, list) {
-  const { useTemplate, sourceDir, templateDir, destinationDir } = options;
+  const { useTemplate, sourceDir, templateDir, destinationDir, styles } =
+    options;
   const filesAndDirs = fs.readdirSync(sourceDir2);
 
   for (let fileOrDir of filesAndDirs) {
@@ -78,6 +128,10 @@ function listDir(options, sourceDir2, list) {
         const fileData = splitFileContents(pathFileOfSrc);
         fileData.dataFrontmatter.pathFile =
           dirUrl.length === 0 ? '' : `${dirUrl}${path.sep}`;
+
+        const level = getNestingFromRoot(dirUrl);
+        fileData.dataFrontmatter.urlCss = `${level}${styles}.css`;
+        fileData.dataFrontmatter.urlJs = `${level}index.js`;
 
         const contentHtml = md.render(fileData.contentMd);
 
@@ -127,22 +181,6 @@ exports.getDataList = function () {
   return dataList;
 };
 
-const generateIndexFile = (options) => {
-  const { destinationDir } = options;
-  const templatePug = `ul   
-  each item in items
-    li
-      a(href=\`\${item.pathFile}\index.html\`)= item.title`;
-
-  const func = pug.compile(templatePug, options);
-  const listOfArticles = func({ items: this.getDataList() });
-
-  fs.writeFileSync(
-    `${destinationDir}${path.sep}mpth-articles.html`,
-    listOfArticles
-  );
-};
-
 exports.init = function (options = {}) {
   const {
     sourceDir,
@@ -151,6 +189,7 @@ exports.init = function (options = {}) {
     destinationDir = 'mpth',
     templateDir = 'mpth',
     dataOutDir = 'mpth',
+    styles = 'github',
   } = options;
 
   if (!sourceDir) {
@@ -164,16 +203,27 @@ exports.init = function (options = {}) {
   options.templateDir = templateDir;
   options.useTemplate = use;
   options.index = index;
+  options.styles = styles;
 
-  if (options.pretty === undefined) options.pretty = true;
+  fs.mkdirSync(destinationDir, { recursive: true });
+
+  if (options.file) if (options.pretty === undefined) options.pretty = true;
 
   if (!fs.existsSync(`${templateDir}${path.sep}mpth-template.pug`)) {
     fs.mkdirSync(templateDir, { recursive: true });
 
-    fs.writeFileSync(`${templateDir}${path.sep}mpth-template.pug`, templatePug);
+    fs.writeFileSync(
+      `${templateDir}${path.sep}mpth-template.pug`,
+      getTemplatePug('..')
+    );
   }
 
   fs.mkdirSync(dataOutDir, { recursive: true });
+
+  fs.copyFileSync(
+    `${__dirname}${path.sep}${styles}.css`,
+    `${destinationDir}${path.sep}${styles}.css`
+  );
 
   const list = [];
 
