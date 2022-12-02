@@ -7,7 +7,7 @@ const pug = require('pug');
 const MarkdownIt = require('markdown-it');
 const md = new MarkdownIt();
 
-function getTemplatePug(level) {
+function getTemplatePug() {
   return `block variables
 
   doctype html
@@ -198,39 +198,57 @@ exports.init = function (options = {}) {
     );
   }
 
+  if ((destinationDir !== 'mpth') & (dataOutDir === 'mpth')) {
+    options.dataOutDir = destinationDir;
+  }
+
+  if ((destinationDir !== 'mpth') & (templateDir === 'mpth')) {
+    options.templateDir = destinationDir;
+  }
+
   const sourceDir2 = sourceDir;
-  options.destinationDir = destinationDir;
-  options.templateDir = templateDir;
   options.useTemplate = use;
-  options.index = index;
-  options.styles = styles;
 
   fs.mkdirSync(destinationDir, { recursive: true });
 
-  if (options.file) if (options.pretty === undefined) options.pretty = true;
+  if (options.pretty === undefined) options.pretty = true;
 
-  if (!fs.existsSync(`${templateDir}${path.sep}mpth-template.pug`)) {
-    fs.mkdirSync(templateDir, { recursive: true });
+  if (!fs.existsSync(`${options.templateDir}${path.sep}mpth-template.pug`)) {
+    fs.mkdirSync(options.templateDir, { recursive: true });
 
     fs.writeFileSync(
-      `${templateDir}${path.sep}mpth-template.pug`,
-      getTemplatePug('..')
+      `${options.templateDir}${path.sep}mpth-template.pug`,
+      getTemplatePug()
     );
   }
 
-  fs.mkdirSync(dataOutDir, { recursive: true });
+  fs.mkdirSync(options.dataOutDir, { recursive: true });
 
-  fs.copyFileSync(
-    `${__dirname}${path.sep}${styles}.css`,
-    `${destinationDir}${path.sep}${styles}.css`
-  );
+  /**
+   * Handler for the styles option
+   */
+  if (!((styles === 'n') | (styles === 'no'))) {
+    if (
+      !fs.existsSync(`${__dirname}${path.sep}themes${path.sep}${styles}.css`)
+    ) {
+      options.styles = 'github';
+      console.log(
+        'ERROR: The specified style file name does not exist. The default style file will be applied.'
+      );
+    }
+
+    fs.copyFileSync(
+      `${__dirname}${path.sep}themes${path.sep}${options.styles}.css`,
+      `${destinationDir}${path.sep}${options.styles}.css`
+    );
+  } else options.styles = 'input';
 
   const list = [];
 
   listDir(options, sourceDir2, list);
 
   fs.writeFileSync(
-    `${dataOutDir}${path.sep}mpth-data.pug`,
+    `${options.dataOutDir}${path.sep}mpth-data.pug`,
     `- const dataListItems = ${JSON.stringify(dataList)}`
   );
 
