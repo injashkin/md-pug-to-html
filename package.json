@@ -1,6 +1,6 @@
 {
   "name": "md-pug-to-html",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "description": "Massively compiles HTML pages from Markdown files using a Pug template",
   "main": "index.js",
   "bin": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "h": "md-pug-to-html --help",
-    "md": "node index -i=content -t=src/pages/article",
+    "md": "node index -i content -t src/pages/article",
     "test": "jest",
     "coverage": "jest --coverage"
   },
