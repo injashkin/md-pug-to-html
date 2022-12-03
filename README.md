@@ -60,6 +60,22 @@ Read in other languages: [Russian](README.ru.md)
 
 <!-- ABOUT THE PROJECT -->
 
+## The easiest way to use MdPugToHtml
+
+To run MdPugToHtml, your computer must have Node.js.
+
+Let's say you have a bunch of Markdown files and they are in the `/home/my/content` directory. You want to convert them to HTML files.
+
+Open a terminal and enter the following command:
+
+```
+npx -y md-pug-to-html /home/my/content
+```
+
+That's it! Now you can use the file manager to go to the `/home/my/content` directory, where you will see the `mpth` directory. Compiled HTML files are located in this directory. You can open the file `mpth-articles.html ` in the browser, as a result, you will see a list of links to your files. By clicking on these links, you can view your documents.
+
+For more advanced ways to use MdPugToHtml, see below.
+
 ## About The Project
 
 MdPugToHtml massively converts Markdown files to HTML files. At the same time, you can specify a Pug template by which all Markdown pages will be converted to HTML.
@@ -108,50 +124,32 @@ The need for the MdPugToHtml converter arose when creating a static page collect
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Installation
-
-```
-npm i -D md-pug-to-html
-```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- USAGE EXAMPLES -->
 
 ## Using CLI
 
-In order for all of the following to work, you must have installed Node.js.
-
-In order for the `npx` command to work, you must have NPM version 5.2 or higher.
-
 ### The easy way
 
-This method allows you to easily convert the entire directory with Markdown files into HTML files.
+A simple way is given at the beginning of this guide, there will be explanations for it here.
 
-Let's say you have Markdown files, they are in the `/home/my/content` directory and you just want to convert them. To do this, open a terminal and enter the following command:
+When executing the above command, the MdPugToHtml converter will be installed and, then, the conversion of Markdown files will be performed. The converter will be installed only when the command is run for the first time. On subsequent launches, only conversion will be performed. The `-y` option is set so that the system does not ask whether md-pug-to-html needs to be installed. Therefore, when restarting, the `-y` option can not be used.
 
-```
-npx -y md-pug-to-html /home/my/content
-```
+In addition to the compiled HTML files, there will be four additional files in the `mpth` directory:
 
-The MdPugToHtml converter will be installed and then Markdown files will be converted. The installation will be performed only when the command is run for the first time. On subsequent launches, only conversion will be performed.
+- `mpth-articles` - contains a list of links to the created Html files. If you open this file in a browser, you can view the created pages from the browser by clicking on the links. You can disable file creation `mpth-articles.html` by applying the `-I` option with the above command.
 
-Open the directory from which you ran the command in the terminal and you will see the `npth` directory there, where the compiled HTML files are located.
+- `mpth-data.pug` - contains an array of objects with data about HTML files. This array can be used, for example, to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
 
-Additionally, there will be three files in the `npth` directory:
+- `mpth-template.pug` - Pug template. This particular template is used by the MdPugToHtml converter to create HTML pages if template conversion is allowed. You can disable template conversion with the `-n` option. You can change the template and run the `npx md-pug-to-html /home/my/content` command again. The articles will be reformatted according to the new template. If you messed up in the template and for some reason your files are not being converted, then delete the `mpth-template.pug` file or the entire `mpth` directory and restart the above command. The template file will be created in its original form.
 
-- `index.html` - contains a list of links to the created Html files. If you open this file in a browser, you can view the created pages from the browser by clicking on the links. You can disable file creation `index.html` by applying the `-I` option with the above command.
-
-- `mpth-data.pug' - contains an array of objects with data about HTML files. This array can be used, for example, to create a list of links to articles in blog format. How to do this, see [Advanced way](#advanced-way).
-
-- `mpth-template.pug` - Pug template. This particular template is used by the MdPugToHtml converter to create HTML pages if template conversion is allowed. You can disable template conversion with the `-n` option. You can change the template and run the `npx md-pug-to-html /home/my/content` command again. The articles will be reformatted according to the new template. If you messed up in the template and your files are not being converted for some reason, then delete the `mpth-template.pug` template and restart the above command. The template file will be created in its original form.
+- `github.css` is a style file, thanks to which your documents have a decorated look.
 
 ### Advanced way
 
 Below is the information for the MdPugToHtml CLI converter
 
 ```
-Usage: md-pug-to-html [options] <dir>
+Usage: md-pug-to-html [options] [dir]
 
 Massively compiles HTML pages from Markdown files using a Pug template
 
@@ -160,11 +158,13 @@ Arguments:
 
 Options:
   -V, --version         output the version number
+  -O, --obj <str|path>  JSON/JavaScript options object or file
   -n, --no-use          do not use the article template
   -I, --no-index        do not generate an index.html file
-  -o, --out [dir]       project build directory (default: "mpth")
-  -t, --template [dir]  catalog of the article template (default: "mpth")
-  -d, --data [dir]      the output directory of the data file (default: "mpth")
+  -o, --out <dir>       project build directory (default: "mpth")
+  -t, --template <dir>  catalog of the article template (default: "mpth")
+  -d, --data <dir>      the output directory of the data file (default: "mpth")
+  -s, --styles <name>   theme name (default: "github")
   -h, --help            display help for command
 
 ```
@@ -431,6 +431,7 @@ In `options` you can specify:
 - `dataOutDir` - the directory where the `mpth-data.pug` file will be stored (by default `dataOutDir: 'mpth',`)
 - `index` - disables the generation of the `index.html` file (by default `index: true`)
 - `use` - prohibits the use of a template for converting articles (by default `use: true`)
+- `styles` is the name of the embedded styles file (by default `styles: 'github'`). You can disable the built-in styles like `styles: 'no'`
 
 For more information, see [Using CLI](#using-CLI).
 
