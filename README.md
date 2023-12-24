@@ -359,7 +359,7 @@ In `package.json` file, add a line marked with a `+`:
 Install `pug-cli`, to do this, run the following command from the root directory of the project in the terminal:
 
 ```
-npm i -D pug-cle
+npm i -D pug-cli
 ```
 
 After installation, run `pug-cli`:
